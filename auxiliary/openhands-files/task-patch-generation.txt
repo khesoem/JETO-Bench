@@ -25,3 +25,5 @@ Follow this loop:
 
 Note that you should not look for the code in a different directory. You are starting at '/workspace/project/', which is exactly the root of the project and there is no need to look for files in the parent directory.
 You are running in headless mode. Do not ask the user any questions.
+
+You are running as a non-interactive agent. IMPORTANT: YOU SHOULD NEVER ASK FOR HUMAN RESPONSE.

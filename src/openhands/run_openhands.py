@@ -10,8 +10,8 @@ TASK_TYPE_TO_PATHS = {
     'test': {'original': 'original_repo', 'patched': 'patched_repo', 'workspace': '/workspace'},
 }
 class OpenHandsRunner:
-    def __init__(self, working_dir: str):
-        self.working_dir = config.utils['working-dir']
+    def __init__(self):
+        self.working_dir = config.openhands['working-dir']
         self.gh_token = config.github['access-token']
         auth = Auth.Token(self.gh_token)
         self.g = Github(auth=auth)
@@ -122,7 +122,7 @@ class OpenHandsRunner:
 
     def _create_config_file(self, openhands_files_path: str, task_type: str) -> str:
         config_template = open(os.path.join(config.openhands['openhands-files-dir'], 'config.toml')).read()
-        config_content = config_template.replace('{working-dir}', self.working_dir).replace('{api-key}', config.openhands['llm-api-key']).replace('{max-iterations}', str(config.openhands['max-iterations'])).replace('{workspace}', TASK_TYPE_TO_PATHS[task_type]['workspace'])
+        config_content = config_template.replace('{working-dir}', self.working_dir).replace('{api-key}', config.openhands['llm-api-key']).replace('{model}', config.openhands['llm-model']).replace('{max-iterations}', str(config.openhands['max-iterations'])).replace('{workspace}', TASK_TYPE_TO_PATHS[task_type]['workspace'])
         config_file_path = os.path.join(openhands_files_path, 'config.toml')
         with open(config_file_path, 'w') as f:
             f.write(config_content)
