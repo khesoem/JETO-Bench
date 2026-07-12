@@ -1,0 +1,34 @@
+issue_url,Label,
+https://github.com/cmu-db/benchbase/issues/125,No,
+https://github.com/openlookeng/hetu-core/issues/198,Yes,
+https://github.com/apache/shardingsphere/issues/1892,Yes,
+https://github.com/keycloak/keycloak/issues/17711,No,
+https://github.com/apache/shardingsphere/issues/1688,No,
+https://github.com/apache/shardingsphere/issues/866,No,
+https://github.com/mybatis/mybatis-3/issues/1929,No,"I think No but hard to tell. The bug is a method which was expected to be non-blocking but was actually blocking. The fix was to make that method non-blocking. (This was a workaround fix since the bug was originally in JDK, rather than in this project.)"
+https://github.com/prestodb/presto/issues/11711,No,
+https://github.com/prestodb/presto/issues/3646,No,
+https://github.com/quarkusio/quarkus/issues/32021,No,I think No but also hard to tell. This made a asynchronous method asynchronous.
+https://github.com/quarkusio/quarkus/issues/49574,Yes,
+https://github.com/quarkusio/quarkus/issues/49118,No,I think No but also hard to tell. This removes a docker check.
+https://github.com/quarkusio/quarkus/issues/46148,Yes,
+https://github.com/quarkusio/quarkus/issues/28267,Yes,
+https://github.com/quarkusio/quarkus/issues/27589,No,
+https://github.com/quarkusio/quarkus/issues/16596,Yes,
+https://github.com/quarkusio/quarkus/issues/13258,Yes,Memory inherently influences execution time
+https://github.com/apache/pulsar/issues/18279,No,
+https://github.com/pinpoint-apm/pinpoint/issues/2394,No,
+https://github.com/trinodb/trino/issues/9743,No,
+https://github.com/trinodb/trino/issues/16577,No,
+https://github.com/apache/shiro/issues/1762,No,
+https://github.com/apache/maven-mvnd/issues/266,No,
+https://github.com/apache/maven-mvnd/issues/65,No,
+https://github.com/eclipse-xpanse/xpanse/issues/379,No,
+https://github.com/Netcentric/accesscontroltool/issues/663,Yes,
+https://github.com/Netcentric/accesscontroltool/issues/618,Yes,"Same async to sync. But I vote for this one since this one proposed to apply async on mutable content. That said, for mutable content, the execution time is ""observed"" improved."
+https://github.com/openhab/org.openhab.binding.zigbee/issues/338,No,
+https://github.com/DataLinkDC/dinky/issues/3274,No,
+https://github.com/apache/streampark/issues/3068,No,"Initially I though this improved execution time until I saw this message in the PR: ""This change is a trivial rework / code cleanup without any test coverage."""
+https://github.com/mapstruct/mapstruct/issues/1414,No,
+https://github.com/cryostatio/cryostat-legacy/issues/312,No,
+https://github.com/timols/java-gitlab-api/issues/237,No,
