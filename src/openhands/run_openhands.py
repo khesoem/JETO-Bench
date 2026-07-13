@@ -225,20 +225,30 @@ class OpenHandsRunner:
             run_cmd(cmd, self.working_dir)
 
     def run_patch_generation(self, repo: str, before_commit: str | None, after_commit: str, issue_id: int, pr_number: int | None = None) -> None:
+        logging.info(f"Running patch generation for {repo} {before_commit} {after_commit} {issue_id} {pr_number}")
         image_name = pull_image_install_git(repo, after_commit, self.working_dir)
+        logging.info(f"Pulled image {image_name}")
+
         container_name = create_tmp_container(image_name, self.working_dir)
+        logging.info(f"Created temporary container {container_name}")
+
         workspace_path = self._prepare_workspace(container_name, before_commit, after_commit, 'patch', pr_number)
+        logging.info(f"Prepared workspace {workspace_path}")
 
         repo = self.g.get_repo(repo)
 
         self._prepare_openhands_files(image_name, repo, before_commit, after_commit, issue_id, workspace_path, 'patch')
-        
+        logging.info(f"Prepared openhands files")
+
         self._remove_tmp_container(container_name)
         self._remove_git_dir(workspace_path, 'patch')
+        logging.info(f"Removed git directories")
 
         self._run_openhands()
+        logging.info(f"Ran openhands")
 
         self._backup_and_clean_openhands_files(after_commit)
+        logging.info(f"Backed up and cleaned openhands files")
     
     def run_test_generation(self, repo: str, before_commit: str | None, after_commit: str, issue_id: int, pr_number: int | None) -> None:
         logging.info(f"Running test generation for {repo} {before_commit} {after_commit} {issue_id} {pr_number}")

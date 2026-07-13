@@ -1,0 +1,343 @@
+--- /workspace/project_original/model/jpa/src/main/java/org/keycloak/models/jpa/RealmAdapter.java	2026-01-08 21:32:32.000000000 +0000
++++ model/jpa/src/main/java/org/keycloak/models/jpa/RealmAdapter.java	2026-07-09 20:50:32.203723995 +0000
+@@ -97,7 +97,6 @@
+     @Override
+     public void setName(String name) {
+         realm.setName(name);
+-        em.flush();
+     }
+ 
+     @Override
+@@ -128,7 +127,6 @@
+     @Override
+     public void setEnabled(boolean enabled) {
+         realm.setEnabled(enabled);
+-        em.flush();
+     }
+ 
+     @Override
+@@ -139,7 +137,6 @@
+     @Override
+     public void setSslRequired(SslRequired sslRequired) {
+         realm.setSslRequired(sslRequired.name());
+-        em.flush();
+     }
+ 
+     @Override
+@@ -150,7 +147,6 @@
+     @Override
+     public void setUserManagedAccessAllowed(boolean userManagedAccessAllowed) {
+         realm.setAllowUserManagedAccess(userManagedAccessAllowed);
+-        em.flush();
+     }
+ 
+     @Override
+@@ -161,7 +157,6 @@
+     @Override
+     public void setRegistrationAllowed(boolean registrationAllowed) {
+         realm.setRegistrationAllowed(registrationAllowed);
+-        em.flush();
+     }
+ 
+     @Override
+@@ -173,7 +168,6 @@
+     public void setRegistrationEmailAsUsername(boolean registrationEmailAsUsername) {
+         realm.setRegistrationEmailAsUsername(registrationEmailAsUsername);
+         if (registrationEmailAsUsername) realm.setDuplicateEmailsAllowed(false);
+-        em.flush();
+     }
+ 
+     @Override
+@@ -184,7 +178,6 @@
+     @Override
+     public void setRememberMe(boolean rememberMe) {
+         realm.setRememberMe(rememberMe);
+-        em.flush();
+     }
+ 
+     @Override
+@@ -357,7 +350,6 @@
+     @Override
+     public void setVerifyEmail(boolean verifyEmail) {
+         realm.setVerifyEmail(verifyEmail);
+-        em.flush();
+     }
+ 
+     @Override
+@@ -369,7 +361,6 @@
+     public void setLoginWithEmailAllowed(boolean loginWithEmailAllowed) {
+         realm.setLoginWithEmailAllowed(loginWithEmailAllowed);
+         if (loginWithEmailAllowed) realm.setDuplicateEmailsAllowed(false);
+-        em.flush();
+     }
+ 
+     @Override
+@@ -384,7 +375,6 @@
+             realm.setLoginWithEmailAllowed(false);
+             realm.setRegistrationEmailAsUsername(false);
+         }
+-        em.flush();
+     }
+ 
+     @Override
+@@ -395,7 +385,6 @@
+     @Override
+     public void setResetPasswordAllowed(boolean resetPasswordAllowed) {
+         realm.setResetPasswordAllowed(resetPasswordAllowed);
+-        em.flush();
+     }
+ 
+     @Override
+@@ -406,7 +395,6 @@
+     @Override
+     public void setEditUsernameAllowed(boolean editUsernameAllowed) {
+         realm.setEditUsernameAllowed(editUsernameAllowed);
+-        em.flush();
+     }
+ 
+     @Override
+@@ -447,7 +435,6 @@
+     @Override
+     public void setAccessTokenLifespan(int tokenLifespan) {
+         realm.setAccessTokenLifespan(tokenLifespan);
+-        em.flush();
+     }
+ 
+     @Override
+@@ -579,7 +566,6 @@
+     @Override
+     public void setAccessCodeLifespan(int accessCodeLifespan) {
+         realm.setAccessCodeLifespan(accessCodeLifespan);
+-        em.flush();
+     }
+ 
+     @Override
+@@ -590,7 +576,6 @@
+     @Override
+     public void setAccessCodeLifespanUserAction(int accessCodeLifespanUserAction) {
+         realm.setAccessCodeLifespanUserAction(accessCodeLifespanUserAction);
+-        em.flush();
+     }
+ 
+     @Override
+@@ -631,7 +616,6 @@
+     @Override
+     public void setAccessCodeLifespanLogin(int accessCodeLifespanLogin) {
+         realm.setAccessCodeLifespanLogin(accessCodeLifespanLogin);
+-        em.flush();
+     }
+ 
+     @Override
+@@ -680,7 +664,6 @@
+     public void addRequiredCredential(String type) {
+         RequiredCredentialModel model = initRequiredCredentialModel(type);
+         addRequiredCredential(model);
+-        em.flush();
+     }
+ 
+     public void addRequiredCredential(RequiredCredentialModel model) {
+@@ -692,7 +675,6 @@
+         entity.setFormLabel(model.getFormLabel());
+         em.persist(entity);
+         realm.getRequiredCredentials().add(entity);
+-        em.flush();
+     }
+ 
+     @Override
+@@ -738,17 +720,13 @@
+         if (groupsIds.contains(group.getId())) return;
+ 
+         groupsIds.add(group.getId());
+-        em.flush();
+         GroupUpdatedEvent.fire(group, session);
+     }
+ 
+     @Override
+     public void removeDefaultGroup(GroupModel group) {
+         Collection<String> groupIds = realm.getDefaultGroupIds();
+-
+-        if (groupIds.remove(group.getId())) {
+-            em.flush();
+-        }
++        groupIds.remove(group.getId());
+     }
+ 
+     @Override
+@@ -841,7 +819,6 @@
+     @Override
+     public void setSmtpConfig(Map<String, String> smtpConfig) {
+         realm.setSmtpConfig(smtpConfig);
+-        em.flush();
+     }
+ 
+ 
+@@ -897,7 +874,6 @@
+     public void setPasswordPolicy(PasswordPolicy policy) {
+         this.passwordPolicy = policy;
+         realm.setPasswordPolicy(policy.toString());
+-        em.flush();
+     }
+ 
+     @Override
+@@ -924,7 +900,6 @@
+         realm.setOtpPolicyType(policy.getType());
+         realm.setOtpPolicyPeriod(policy.getPeriod());
+         setAttribute(OTPPolicy.REALM_REUSABLE_CODE_ATTRIBUTE, policy.isCodeReusable());
+-        em.flush();
+     }
+ 
+ 
+@@ -1110,7 +1085,6 @@
+     @Override
+     public void setLoginTheme(String name) {
+         realm.setLoginTheme(name);
+-        em.flush();
+     }
+ 
+     @Override
+@@ -1121,7 +1095,6 @@
+     @Override
+     public void setAccountTheme(String name) {
+         realm.setAccountTheme(name);
+-        em.flush();
+     }
+ 
+     @Override
+@@ -1132,7 +1105,6 @@
+     @Override
+     public void setAdminTheme(String name) {
+         realm.setAdminTheme(name);
+-        em.flush();
+     }
+ 
+     @Override
+@@ -1143,7 +1115,6 @@
+     @Override
+     public void setEmailTheme(String name) {
+         realm.setEmailTheme(name);
+-        em.flush();
+     }
+ 
+     @Override
+@@ -1154,7 +1125,6 @@
+     @Override
+     public void setEventsEnabled(boolean enabled) {
+         realm.setEventsEnabled(enabled);
+-        em.flush();
+     }
+ 
+     @Override
+@@ -1165,7 +1135,6 @@
+     @Override
+     public void setEventsExpiration(long expiration) {
+         realm.setEventsExpiration(expiration);
+-        em.flush();
+     }
+ 
+     @Override
+@@ -1176,7 +1145,6 @@
+     @Override
+     public void setEventsListeners(Set<String> listeners) {
+         realm.setEventsListeners(listeners);
+-        em.flush();
+     }
+ 
+     @Override
+@@ -1187,7 +1155,6 @@
+     @Override
+     public void setEnabledEventTypes(Set<String> enabledEventTypes) {
+         realm.setEnabledEventTypes(enabledEventTypes);
+-        em.flush();
+     }
+ 
+     @Override
+@@ -1198,7 +1165,6 @@
+     @Override
+     public void setAdminEventsEnabled(boolean enabled) {
+         realm.setAdminEventsEnabled(enabled);
+-        em.flush();
+     }
+ 
+     @Override
+@@ -1209,7 +1175,6 @@
+     @Override
+     public void setAdminEventsDetailsEnabled(boolean enabled) {
+         realm.setAdminEventsDetailsEnabled(enabled);
+-        em.flush();
+     }
+ 
+     @Override
+@@ -1285,7 +1250,6 @@
+     public void setMasterAdminClient(ClientModel client) {
+         String appEntityId = client !=null ? em.getReference(ClientEntity.class, client.getId()).getId() : null;
+         realm.setMasterAdminClient(appEntityId);
+-        em.flush();
+     }
+ 
+     @Override
+@@ -1352,7 +1316,6 @@
+     @Override
+     public void setInternationalizationEnabled(boolean enabled) {
+         realm.setInternationalizationEnabled(enabled);
+-        em.flush();
+     }
+ 
+     @Override
+@@ -1363,7 +1326,6 @@
+     @Override
+     public void setSupportedLocales(Set<String> locales) {
+         realm.setSupportedLocales(locales);
+-        em.flush();
+     }
+ 
+     @Override
+@@ -1374,7 +1336,6 @@
+     @Override
+     public void setDefaultLocale(String locale) {
+         realm.setDefaultLocale(locale);
+-        em.flush();
+     }
+ 
+     @Override
+@@ -1667,7 +1628,6 @@
+             AuthenticationFlowEntity flow = em.find(AuthenticationFlowEntity.class, model.getParentFlow());
+             entity.setParentFlow(flow);
+         }
+-        em.flush();
+     }
+ 
+     @Override
+--- /workspace/project_original/model/jpa/src/main/java/org/keycloak/models/jpa/JpaRealmProvider.java	2026-01-08 21:32:32.000000000 +0000
++++ model/jpa/src/main/java/org/keycloak/models/jpa/JpaRealmProvider.java	2026-07-09 20:48:43.769603520 +0000
+@@ -121,7 +121,6 @@
+         realm.setName(name);
+         realm.setId(id);
+         em.persist(realm);
+-        em.flush();
+         final RealmModel adapter = new RealmAdapter(session, em, realm);
+         session.getKeycloakSessionFactory().publish(new RealmModel.RealmCreationEvent() {
+             @Override
+@@ -193,7 +192,6 @@
+         session.users().preRemove(adapter);
+ 
+         realm.getDefaultGroupIds().clear();
+-        em.flush();
+ 
+         session.clients().removeClients(adapter);
+ 
+@@ -254,7 +252,6 @@
+         entity.setName(name);
+         entity.setRealmId(realm.getId());
+         em.persist(entity);
+-        em.flush();
+         RoleAdapter adapter = new RoleAdapter(session, realm, em, entity);
+         return adapter;
+ 
+@@ -839,7 +836,6 @@
+         groupEntity.setParentId(toParent == null? GroupEntity.TOP_PARENT_ID : toParent.getId());
+         groupEntity.setType(type == null ? Type.REALM.intValue() : type.intValue());
+         em.persist(groupEntity);
+-        em.flush();
+ 
+         GroupAdapter group = new GroupAdapter(session, realm, em, groupEntity);
+ 

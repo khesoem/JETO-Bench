@@ -1,0 +1,24 @@
+--- config/seata-config-core/src/main/java/io/seata/config/FileConfiguration.java	2026-01-10 01:04:25.000000000 +0000
++++ config/seata-config-core/src/main/java/io/seata/config/FileConfiguration.java	2026-07-12 06:56:29.585502709 +0000
+@@ -335,9 +335,6 @@
+ 
+         private final String dataId;
+         private final ConfigurationChangeListener listener;
+-        private final ExecutorService executor = new ThreadPoolExecutor(CORE_LISTENER_THREAD, MAX_LISTENER_THREAD, 0L,
+-                TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>(),
+-                new NamedThreadFactory("fileListener", MAX_LISTENER_THREAD));
+ 
+         /**
+          * Instantiates a new FileListener.
+@@ -374,11 +371,6 @@
+                 }
+             }
+         }
+-
+-        @Override
+-        public ExecutorService getExecutorService() {
+-            return executor;
+-        }
+     }
+ 
+ }

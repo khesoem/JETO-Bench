@@ -1,0 +1,40 @@
+--- a/pulsar-client-api/src/main/java/org/apache/pulsar/client/api/PulsarClientException.java
++++ b/pulsar-client-api/src/main/java/org/apache/pulsar/client/api/PulsarClientException.java
+@@ -108,22 +108,31 @@
+     }
+ 
+     @Override
+     public String toString() {
++        return toString(0);
++    }
++
++    private String toString(int depth) {
+-        if (previous == null || previous.isEmpty()) {
++        if (previous == null || previous.isEmpty() || depth >= 3) {
+             return super.toString();
+         } else {
+             StringBuilder sb = new StringBuilder(super.toString());
+             int i = 0;
+             boolean first = true;
+             sb.append("{\"previous\":[");
+             for (Throwable t : previous) {
+                 if (first) {
+                     first = false;
+                 } else {
+                     sb.append(',');
+                 }
+-                sb.append("{\"attempt\":").append(i++)
+-                    .append(",\"error\":\"").append(t.toString().replace("\"", "\\\""))
+-                    .append("\"}");
++                sb.append("{\"attempt\":").append(i++);
++                String errorStr;
++                if (t instanceof PulsarClientException) {
++                    errorStr = ((PulsarClientException) t).toString(depth + 1);
++                } else {
++                    errorStr = t.toString();
++                }
++                sb.append(",\"error\":\"").append(errorStr.replace("\"", "\\\""))
++                    .append("\"}");
+             }
+             sb.append("]}");
+             return sb.toString();

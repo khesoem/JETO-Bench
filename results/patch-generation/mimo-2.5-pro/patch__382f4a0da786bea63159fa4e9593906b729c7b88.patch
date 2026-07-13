@@ -1,0 +1,90 @@
+--- spring-cloud-sleuth-core/src/main/java/org/springframework/cloud/sleuth/instrument/messaging/TracingChannelInterceptor.java
++++ spring-cloud-sleuth-core/src/main/java/org/springframework/cloud/sleuth/instrument/messaging/TracingChannelInterceptor.java
+@@ -174,25 +174,41 @@
+ 		if (emptyMessage(message)) {
+ 			return message;
+ 		}
+ 		Message<?> retrievedMessage = getMessage(message);
+-		MessageHeaderAccessor headers = mutableHeaderAccessor(retrievedMessage);
+-		TraceContextOrSamplingFlags extracted = this.extractor.extract(headers);
++		MessageHeaderAccessor accessor = MessageHeaderAccessor
++				.getAccessor(retrievedMessage, MessageHeaderAccessor.class);
++		if (accessor != null && accessor.isMutable()) {
++			// Already mutable
++			updateHeaders(accessor, retrievedMessage, channel);
++		}
++		else {
++			// Already immutable or maybe not STOMP messaging
++			accessor = MessageHeaderAccessor.getMutableAccessor(retrievedMessage);
++			accessor.setLeaveMutable(true); // leave mutable for other interceptors
++			updateHeaders(accessor, retrievedMessage, channel);
++			Message<?> outputMessage = outputMessage(message, retrievedMessage, accessor);
++			if (isDirectChannel(channel)) {
++				beforeHandle(outputMessage, channel, null);
++			}
++			return outputMessage;
++		}
++		return message;
++	}
++
++	private void updateHeaders(MessageHeaderAccessor accessor, Message<?> message,
++			MessageChannel channel) {
++		TraceContextOrSamplingFlags extracted = this.extractor.extract(accessor);
+ 		Span span = this.threadLocalSpan.next(extracted);
+-		MessageHeaderPropagation.removeAnyTraceHeaders(headers,
++		MessageHeaderPropagation.removeAnyTraceHeaders(accessor,
+ 				this.tracing.propagation().keys());
+-		this.injector.inject(span.context(), headers);
++		this.injector.inject(span.context(), accessor);
+ 		if (!span.isNoop()) {
+ 			span.kind(Span.Kind.PRODUCER).name("send").start();
+-			span.remoteServiceName(toRemoteServiceName(headers));
++			span.remoteServiceName(toRemoteServiceName(accessor));
+ 			addTags(message, span, channel);
+ 		}
+ 		if (log.isDebugEnabled()) {
+ 			log.debug("Created a new span in pre send" + span);
+ 		}
+-		Message<?> outputMessage = outputMessage(message, retrievedMessage, headers);
+-		if (isDirectChannel(channel)) {
+-			beforeHandle(outputMessage, channel, null);
+-		}
+-		return outputMessage;
+ 	}
+ 
+ 	private String toRemoteServiceName(MessageHeaderAccessor headers) {
+@@ -412,7 +428,14 @@
+ 	}
+ 
+ 	private MessageHeaderAccessor mutableHeaderAccessor(Message<?> message) {
+-		MessageHeaderAccessor headers = MessageHeaderAccessor.getMutableAccessor(message);
++		MessageHeaderAccessor headers = MessageHeaderAccessor.getAccessor(message,
++				MessageHeaderAccessor.class);
++		if (headers != null && headers.isMutable()) {
++			// Already mutable
++			return headers;
++		}
++		// Already immutable or maybe not STOMP messaging
++		headers = MessageHeaderAccessor.getMutableAccessor(message);
+ 		headers.setLeaveMutable(true);
+ 		return headers;
+ 	}
+--- spring-cloud-sleuth-core/src/main/java/org/springframework/cloud/sleuth/instrument/messaging/TracingMethodMessageHandlerAdapter.java
++++ spring-cloud-sleuth-core/src/main/java/org/springframework/cloud/sleuth/instrument/messaging/TracingMethodMessageHandlerAdapter.java
+@@ -138,7 +138,16 @@
+ 	MessageConsumerRequest(Message delegate,
+ 			Getter<MessageHeaderAccessor, String> getter) {
+ 		this.delegate = delegate;
+-		this.mutableHeaders = MessageHeaderAccessor.getMutableAccessor(delegate);
++		MessageHeaderAccessor headers = MessageHeaderAccessor.getAccessor(delegate,
++				MessageHeaderAccessor.class);
++		if (headers != null && headers.isMutable()) {
++			// Already mutable
++			this.mutableHeaders = headers;
++		}
++		else {
++			// Already immutable or maybe not STOMP messaging
++			this.mutableHeaders = MessageHeaderAccessor.getMutableAccessor(delegate);
++		}
+ 		this.getter = getter;
+ 	}

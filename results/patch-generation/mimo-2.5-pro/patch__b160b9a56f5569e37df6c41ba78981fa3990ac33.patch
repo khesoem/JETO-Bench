@@ -1,0 +1,51 @@
+--- /tmp/FieldInfo_original.java	2026-07-11 22:17:16.179694031 +0000
++++ /workspace/project/core/src/main/java/org/neo4j/ogm/metadata/FieldInfo.java	2026-07-11 22:16:29.801931047 +0000
+@@ -89,6 +89,12 @@
+     private volatile Optional<Class<?>> convertedType;
+ 
+     /**
++     * Cached result of the relationship() method.
++     * It is lazily computed to avoid repeated calls to relationshipFields() and inferRelationshipType().
++     */
++    private volatile Optional<String> cachedRelationship;
++
++    /**
+      * Constructs a new {@link FieldInfo} based on the given arguments.
+      *
+      * @param typeParameterDescriptor The descriptor that expresses the generic type parameter, which may be <code>null</code>
+@@ -161,17 +167,31 @@
+     }
+ 
+     public String relationship() {
++        Optional<String> loadedCachedRelationship = this.cachedRelationship;
++        if (loadedCachedRelationship == null) {
++            synchronized (this) {
++                loadedCachedRelationship = this.cachedRelationship;
++                if (loadedCachedRelationship == null) {
++                    this.cachedRelationship = computeRelationship();
++                    loadedCachedRelationship = this.cachedRelationship;
++                }
++            }
++        }
++        return loadedCachedRelationship.orElse(null);
++    }
++
++    private Optional<String> computeRelationship() {
+         if (this.containingClassInfo.relationshipFields().contains(this)) {
+             if (annotations != null) {
+                 AnnotationInfo relationshipAnnotation = annotations.get(Relationship.class);
+                 if (relationshipAnnotation != null) {
+-                    return relationshipAnnotation
+-                        .get(Relationship.TYPE, RelationshipUtils.inferRelationshipType(getName()));
++                    return Optional.of(relationshipAnnotation
++                        .get(Relationship.TYPE, RelationshipUtils.inferRelationshipType(getName())));
+                 }
+             }
+-            return RelationshipUtils.inferRelationshipType(getName());
++            return Optional.of(RelationshipUtils.inferRelationshipType(getName()));
+         }
+-        return null;
++        return Optional.empty();
+     }
+ 
+     public String relationshipTypeAnnotation() {

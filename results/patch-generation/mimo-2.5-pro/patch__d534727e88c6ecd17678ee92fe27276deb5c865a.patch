@@ -1,0 +1,11 @@
+--- /workspace/project_original/liquibase-standard/src/main/java/liquibase/snapshot/SnapshotGeneratorFactory.java	2026-01-09 03:54:43.000000000 +0000
++++ /workspace/project/liquibase-standard/src/main/java/liquibase/snapshot/SnapshotGeneratorFactory.java	2026-07-10 23:39:47.385630232 +0000
+@@ -198,7 +198,7 @@
+         SnapshotControl replacedSnapshotControl = new SnapshotControl(database, false, example.getClass());
+         replacedSnapshotControl.setWarnIfObjectNotFound(false);
+         replacedSnapshotControl.setSearchNestedObjects(snapshotControl.shouldSearchNestedObjects());
+-        DatabaseSnapshot snapshot = createSnapshot(catalogAndSchema, database, snapshotControl);
++        DatabaseSnapshot snapshot = createSnapshot(catalogAndSchema, database, replacedSnapshotControl);
+         for (DatabaseObject obj : snapshot.get(example.getClass())) {
+             if (DatabaseObjectComparatorFactory.getInstance().isSameObject(example, obj, null, database)) {
+                 return true;

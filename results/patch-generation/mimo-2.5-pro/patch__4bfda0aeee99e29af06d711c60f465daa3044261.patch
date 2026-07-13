@@ -1,0 +1,134 @@
+--- project_original/src/main/java/com/gluonhq/richtext/model/TextDecoration.java	2026-01-09 12:20:18.000000000 +0000
++++ project/src/main/java/com/gluonhq/richtext/model/TextDecoration.java	2026-07-11 10:36:23.214617977 +0000
+@@ -2,6 +2,8 @@
+ 
+ import javafx.scene.paint.Color;
+ import javafx.scene.text.Font;
++import javafx.scene.text.FontPosture;
++import javafx.scene.text.FontWeight;
+ import javafx.scene.text.Text;
+ 
+ import java.util.Optional;
+@@ -11,12 +13,16 @@
+     public static TextDecoration DEFAULT = builder()
+             .foreground(Color.BLUE)
+             .background(Color.BLUE)
+-            .font( Font.font( "Arial", 17 ))
++            .fontFamily("Arial")
++            .fontSize(17)
+             .build();
+ 
+     private Color foreground;
+     private Color background;
+-    private Font font;
++    private String fontFamily;
++    private double fontSize;
++    private FontWeight fontWeight;
++    private FontPosture fontPosture;
+ 
+     private TextDecoration() {}
+ 
+@@ -28,14 +34,38 @@
+         return background;
+     }
+ 
++    public String getFontFamily() {
++        return fontFamily;
++    }
++
++    public double getFontSize() {
++        return fontSize;
++    }
++
++    public FontWeight getFontWeight() {
++        return fontWeight;
++    }
++
++    public FontPosture getFontPosture() {
++        return fontPosture;
++    }
++
++    /**
++     * Creates a Font object from the stored font attributes.
++     * @return Font created from attributes
++     */
+     public Font getFont() {
+-        return font;
++        String family = fontFamily != null ? fontFamily : Font.getDefault().getFamily();
++        double size = fontSize > 0 ? fontSize : Font.getDefault().getSize();
++        FontWeight weight = fontWeight != null ? fontWeight : FontWeight.NORMAL;
++        FontPosture posture = fontPosture != null ? fontPosture : FontPosture.REGULAR;
++        return Font.font(family, weight, posture, size);
+     }
+ 
+     public Text asText(String content ) {
+         Text text = new Text(content);
+         Optional.ofNullable(foreground).ifPresent(text::setFill); // has to be fill for font to render properly
+-        Optional.ofNullable(font).ifPresentOrElse(text::setFont, () -> text.setFont(DEFAULT.font) );
++        text.setFont(getFont());
+         return text;
+     }
+ 
+@@ -47,7 +77,10 @@
+ 
+         private Color foreground;
+         private Color background;
+-        private Font font;
++        private String fontFamily;
++        private double fontSize;
++        private FontWeight fontWeight;
++        private FontPosture fontPosture;
+ 
+         private Builder() {}
+ 
+@@ -55,7 +88,10 @@
+             TextDecoration decoration = new TextDecoration();
+             decoration.foreground = this.foreground;
+             decoration.background = this.background;
+-            decoration.font = this.font;
++            decoration.fontFamily = this.fontFamily;
++            decoration.fontSize = this.fontSize;
++            decoration.fontWeight = this.fontWeight;
++            decoration.fontPosture = this.fontPosture;
+             return decoration;
+         }
+ 
+@@ -69,8 +105,37 @@
+             return this;
+         }
+ 
++        Builder fontFamily( String fontFamily ) {
++            this.fontFamily = fontFamily;
++            return this;
++        }
++
++        Builder fontSize( double fontSize ) {
++            this.fontSize = fontSize;
++            return this;
++        }
++
++        Builder fontWeight( FontWeight fontWeight ) {
++            this.fontWeight = fontWeight;
++            return this;
++        }
++
++        Builder fontPosture( FontPosture fontPosture ) {
++            this.fontPosture = fontPosture;
++            return this;
++        }
++
++        /**
++         * @deprecated Use fontFamily, fontSize, fontWeight, fontPosture instead for better performance
++         */
++        @Deprecated
+         Builder font( Font font ) {
+-            this.font = font;
++            this.fontFamily = font.getFamily();
++            this.fontSize = font.getSize();
++            // Extract weight and posture from font style
++            String style = font.getStyle();
++            this.fontWeight = FontWeight.findByName(style);
++            this.fontPosture = FontPosture.findByName(style);
+             return this;
+         }
+     }

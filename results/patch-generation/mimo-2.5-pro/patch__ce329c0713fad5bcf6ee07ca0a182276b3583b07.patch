@@ -1,0 +1,69 @@
+--- ./connect-file-pulse-filesystems/filepulse-amazons3-fs/src/main/java/io/streamthoughts/kafka/connect/filepulse/fs/AmazonS3Storage.java	2026-01-09 12:23:34.000000000 +0000
++++ ../project/connect-file-pulse-filesystems/filepulse-amazons3-fs/src/main/java/io/streamthoughts/kafka/connect/filepulse/fs/AmazonS3Storage.java	2026-07-11 11:14:32.412600552 +0000
+@@ -27,6 +27,7 @@
+ import com.amazonaws.services.s3.model.GetObjectMetadataRequest;
+ import com.amazonaws.services.s3.model.GetObjectRequest;
+ import com.amazonaws.services.s3.model.ObjectMetadata;
++import com.amazonaws.services.s3.model.S3ObjectSummary;
+ import com.amazonaws.services.s3.model.StorageClass;
+ import io.streamthoughts.kafka.connect.filepulse.source.FileObjectMeta;
+ import io.streamthoughts.kafka.connect.filepulse.source.GenericFileObjectMeta;
+@@ -95,6 +96,42 @@
+     }
+ 
+     /**
++     * Create a {@link FileObjectMeta} from an {@link S3ObjectSummary} without making additional API calls.
++     * This is used for listing objects to avoid extra metadata requests.
++     *
++     * @param objectSummary the S3 object summary.
++     * @return a new {@link FileObjectMeta}.
++     */
++    public FileObjectMeta createFileObjectMeta(final S3ObjectSummary objectSummary) {
++        final S3BucketKey s3Object = new S3BucketKey(
++                objectSummary.getBucketName(),
++                objectSummary.getKey()
++        );
++
++        final HashMap<String, Object> userDefinedMetadata = new HashMap<>();
++        userDefinedMetadata.put("s3.object.summary.bucketName", objectSummary.getBucketName());
++        userDefinedMetadata.put("s3.object.summary.key", objectSummary.getKey());
++        userDefinedMetadata.put("s3.object.summary.etag", objectSummary.getETag());
++        userDefinedMetadata.put("s3.object.summary.storageClass", objectSummary.getStorageClass());
++
++        // Use ETag as content digest (MD5 is not available in S3ObjectSummary)
++        FileObjectMeta.ContentDigest digest = null;
++        final String eTag = objectSummary.getETag();
++        if (eTag != null) {
++            digest = new FileObjectMeta.ContentDigest(eTag, "ETAG");
++        }
++
++        return new GenericFileObjectMeta.Builder()
++                .withUri(s3Object.toURI())
++                .withName(s3Object.key())
++                .withContentLength(objectSummary.getSize())
++                .withLastModified(objectSummary.getLastModified())
++                .withContentDigest(digest)
++                .withUserDefinedMetadata(userDefinedMetadata)
++                .build();
++    }
++
++    /**
+      * {@inheritDoc}
+      */
+     public boolean move(final URI source, final URI dest) {
+--- ./connect-file-pulse-filesystems/filepulse-amazons3-fs/src/main/java/io/streamthoughts/kafka/connect/filepulse/fs/AmazonS3FileSystemListing.java	2026-01-09 12:23:34.000000000 +0000
++++ ../project/connect-file-pulse-filesystems/filepulse-amazons3-fs/src/main/java/io/streamthoughts/kafka/connect/filepulse/fs/AmazonS3FileSystemListing.java	2026-07-11 11:14:37.670800367 +0000
+@@ -95,12 +95,7 @@
+ 
+                 objectMetaList.addAll(objectListing.getObjectSummaries()
+                         .stream()
+-                        .map(s3ObjectSummary ->
+-                                new S3BucketKey(
+-                                        s3ObjectSummary.getBucketName(),
+-                                        s3ObjectSummary.getKey()
+-                                ))
+-                        .map(s3Storage::getObjectMetadata)
++                        .map(s3Storage::createFileObjectMeta)
+                         .filter(Objects::nonNull)
+                         .collect(Collectors.toList()));
+ 

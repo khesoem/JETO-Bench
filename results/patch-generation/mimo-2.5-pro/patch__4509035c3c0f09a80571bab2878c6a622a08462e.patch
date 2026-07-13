@@ -1,0 +1,18 @@
+--- /workspace/project_original/mockserver-core/src/main/java/org/mockserver/mock/HttpState.java	2026-01-09 12:29:59.000000000 +0000
++++ /workspace/project/mockserver-core/src/main/java/org/mockserver/mock/HttpState.java	2026-07-11 11:49:01.614229600 +0000
+@@ -162,7 +162,6 @@
+             );
+             throw new IllegalArgumentException("\"" + request.getFirstQueryStringParameter("type") + "\" is not a valid value for \"type\" parameter, only the following values are supported " + Arrays.stream(ClearType.values()).map(input -> input.name().toLowerCase()).collect(Collectors.toList()));
+         }
+-        System.gc();
+     }
+ 
+     private RequestDefinition resolveExpectationId(ExpectationId expectationId) {
+@@ -193,7 +192,6 @@
+                     .setMessageFormat("resetting all expectations and request logs")
+             );
+         }
+-        System.gc();
+         new Scheduler.SchedulerThreadFactory("MockServer Memory Metrics").newThread(() -> {
+             try {
+                 SECONDS.sleep(10);

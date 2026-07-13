@@ -1,0 +1,68 @@
+--- /workspace/project_original/model/infinispan/src/main/java/org/keycloak/models/cache/infinispan/organization/InfinispanOrganizationProvider.java    2026-01-10 00:02:17.000000000 +0000
++++ model/infinispan/src/main/java/org/keycloak/models/cache/infinispan/organization/InfinispanOrganizationProvider.java        2026-07-12 04:10:15.920433656 +0000
+@@ -109,9 +109,6 @@
+         if (cached == null) {
+             Long loaded = realmCache.getCache().getCurrentRevision(cacheKey);
+             OrganizationModel model = orgDelegate.getByDomainName(domainName);
+-            if (model == null) {
+-                return null;
+-            }
+             cached = new CachedOrganizationIds(loaded, cacheKey, getRealm(), model);
+             realmCache.getCache().addRevisioned(cached, realmCache.getStartupRevision());
+         }
+
+--- /workspace/project_original/model/infinispan/src/main/java/org/keycloak/models/cache/infinispan/organization/CachedOrganizationIds.java     2026-01-10 00:02:15.000000000 +0000
++++ model/infinispan/src/main/java/org/keycloak/models/cache/infinispan/organization/CachedOrganizationIds.java 2026-07-12 04:10:34.867155904 +0000
+@@ -35,7 +35,7 @@
+     public CachedOrganizationIds(Long revision, String id, RealmModel realm, OrganizationModel model) {
+         super(revision, id);
+         this.realmId = realm.getId();
+-        orgIds = List.of(model.getId());
++        orgIds = model != null ? List.of(model.getId()) : List.of();
+     }
+
+     public CachedOrganizationIds(Long revision, String id, RealmModel realm, Stream<OrganizationModel> models) {
+
+--- /workspace/project_original/model/infinispan/src/main/java/org/keycloak/models/cache/infinispan/organization/OrganizationAdapter.java       2026-01-10 00:02:17.000000000 +0000
++++ model/infinispan/src/main/java/org/keycloak/models/cache/infinispan/organization/OrganizationAdapter.java   2026-07-12 04:03:27.818858115 +0000
+@@ -156,12 +156,12 @@
+
+     @Override
+     public boolean isManaged(UserModel user) {
+-        return delegate.isManagedMember(this, user);
++        return organizationCache.isManagedMember(this, user);
+     }
+
+     @Override
+     public boolean isMember(UserModel user) {
+-        return delegate.isMember(this, user);
++        return organizationCache.isMember(this, user);
+     }
+
+     @Override
+
+--- /workspace/project_original/services/src/main/java/org/keycloak/organization/utils/Organizations.java       2026-01-10 00:02:17.000000000 +0000
++++ services/src/main/java/org/keycloak/organization/utils/Organizations.java   2026-07-12 04:07:02.003033163 +0000
+@@ -185,6 +185,10 @@
+     }
+
+     public static OrganizationModel resolveOrganization(KeycloakSession session, UserModel user, String domain) {
++        if (!Profile.isFeatureEnabled(Feature.ORGANIZATION)) {
++            return null;
++        }
++
+         Optional<OrganizationModel> organization = Optional.ofNullable(session.getContext().getOrganization());
+
+         if (organization.isPresent()) {
+@@ -193,6 +197,11 @@
+         }
+
+         OrganizationProvider provider = getProvider(session);
++
++        if (provider == null || !provider.isEnabled()) {
++            return null;
++        }
++
+         AuthenticationSessionModel authSession = session.getContext().getAuthenticationSession();
+
+         if (authSession != null) {

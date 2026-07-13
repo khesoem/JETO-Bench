@@ -1,0 +1,70 @@
+--- /workspace/project_original/core/src/main/java/org/neo4j/ogm/metadata/ClassInfo.java	2026-01-09 21:36:39.000000000 +0000
++++ /workspace/project/core/src/main/java/org/neo4j/ogm/metadata/ClassInfo.java	2026-07-11 21:40:57.557880601 +0000
+@@ -107,6 +107,8 @@
+     private volatile MethodInfo postLoadMethod;
+     private volatile Collection<String> staticLabels;
+     private volatile Set<FieldInfo> relationshipFields;
++    private volatile Optional<FieldInfo> endNodeReader;
++    private volatile Optional<FieldInfo> startNodeReader;
+     private boolean primaryIndexFieldChecked = false;
+     private final Class<?> cls;
+     private Class<? extends IdStrategy> idStrategyClass;
+@@ -1061,16 +1063,26 @@
+      * @return a FieldInfo for the field annotated as the EndNode, or none if not found
+      */
+     public FieldInfo getEndNodeReader() {
++        initEndNodeReader();
++        return endNodeReader.orElse(null);
++    }
++
++    private synchronized void initEndNodeReader() {
++        if (endNodeReader != null) {
++            return;
++        }
++
+         if (isRelationshipEntity()) {
+             for (FieldInfo fieldInfo : fieldsInfo().fields()) {
+                 if (fieldInfo.getAnnotations().get(EndNode.class) != null) {
+-                    return fieldInfo;
++                    endNodeReader = Optional.of(fieldInfo);
++                    return;
+                 }
+             }
+             LOGGER.warn("Failed to find an @EndNode on {}", name());
+         }
+ 
+-        return null;
++        endNodeReader = Optional.empty();
+     }
+ 
+     /**
+@@ -1079,16 +1091,26 @@
+      * @return a FieldInfo for the field annotated as the StartNode, or none if not found
+      */
+     public FieldInfo getStartNodeReader() {
+-        if (isRelationshipEntity()) {
++        initStartNodeReader();
++        return startNodeReader.orElse(null);
++    }
++
++    private synchronized void initStartNodeReader() {
++        if (startNodeReader != null) {
++            return;
++        }
+ 
++        if (isRelationshipEntity()) {
+             for (FieldInfo fieldInfo : fieldsInfo().fields()) {
+                 if (fieldInfo.getAnnotations().get(StartNode.class) != null) {
+-                    return fieldInfo;
++                    startNodeReader = Optional.of(fieldInfo);
++                    return;
+                 }
+             }
+             LOGGER.warn("Failed to find an @StartNode on {}", name());
+         }
+-        return null;
++
++        startNodeReader = Optional.empty();
+     }
+ 
+     /**

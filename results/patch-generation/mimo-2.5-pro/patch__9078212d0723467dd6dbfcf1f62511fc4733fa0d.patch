@@ -1,0 +1,19 @@
+--- /workspace/project_original/src/main/java/io/r2dbc/postgresql/client/ReactorNettyClient.java	2026-01-09 11:02:31.000000000 +0000
++++ /workspace/project/src/main/java/io/r2dbc/postgresql/client/ReactorNettyClient.java	2026-07-11 06:29:01.756655903 +0000
+@@ -797,6 +797,16 @@
+ 
+             this.demand.decrementAndGet();
+ 
++            // Fast-path: if buffer is empty and not currently draining, try to emit directly
++            if (this.buffer.isEmpty() && !this.drain.get()) {
++                Conversation conversation = this.conversations.peek();
++                if (conversation != null && conversation.hasDemand()) {
++                    emit(conversation, message);
++                    potentiallyDemandMore(conversation);
++                    return;
++                }
++            }
++
+             if (!this.buffer.offer(message)) {
+                 ReferenceCountUtil.release(message);
+                 Operators.onNextDropped(message, currentContext());

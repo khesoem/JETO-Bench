@@ -1,0 +1,21 @@
+--- a/shardingsphere-infra/shardingsphere-infra-executor/src/main/java/org/apache/shardingsphere/infra/executor/sql/prepare/driver/DriverExecutionPrepareEngine.java
++++ b/shardingsphere-infra/shardingsphere-infra-executor/src/main/java/org/apache/shardingsphere/infra/executor/sql/prepare/driver/DriverExecutionPrepareEngine.java
+@@ -62,7 +62,18 @@
+         super(maxConnectionsSizePerQuery, rules);
+         this.executorDriverManager = executorDriverManager;
+         this.option = option;
+-        sqlExecutionUnitBuilder = TYPE_TO_BUILDER_MAP.computeIfAbsent(type, key -> TypedSPIRegistry.getRegisteredService(SQLExecutionUnitBuilder.class, key, new Properties()));
++        sqlExecutionUnitBuilder = loadSQLExecutionUnitBuilder(type);
++    }
++    
++    @SuppressWarnings("rawtypes")
++    private static SQLExecutionUnitBuilder loadSQLExecutionUnitBuilder(final String type) {
++        SQLExecutionUnitBuilder result = TYPE_TO_BUILDER_MAP.get(type);
++        if (null != result) {
++            return result;
++        }
++        TYPE_TO_BUILDER_MAP.putIfAbsent(type, TypedSPIRegistry.getRegisteredService(SQLExecutionUnitBuilder.class, type, new Properties()));
++        return TYPE_TO_BUILDER_MAP.get(type);
+     }
+     
+     @Override

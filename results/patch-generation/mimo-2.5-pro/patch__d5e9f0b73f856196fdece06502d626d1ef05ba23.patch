@@ -1,0 +1,150 @@
+--- project_original/src/main/java/kafdrop/service/KafkaHighLevelConsumer.java	2026-01-10 01:41:20.000000000 +0000
++++ project/src/main/java/kafdrop/service/KafkaHighLevelConsumer.java	2026-07-12 08:06:09.587428552 +0000
+@@ -14,17 +14,27 @@
+ import java.nio.*;
+ import java.time.*;
+ import java.util.*;
++import java.util.concurrent.*;
+ import java.util.stream.*;
+ 
+ @Service
+ public final class KafkaHighLevelConsumer {
+   private static final int POLL_TIMEOUT_MS = 200;
++  private static final long CACHE_EXPIRY_MS = 30000; // 30 seconds cache
+ 
+   private static final Logger LOG = LoggerFactory.getLogger(KafkaHighLevelConsumer.class);
+ 
+   private KafkaConsumer<byte[], byte[]> kafkaConsumer;
+ 
+   private final KafkaConfiguration kafkaConfiguration;
++  
++  // Cache for topic metadata
++  private Map<String, TopicVO> topicCache = new ConcurrentHashMap<>();
++  private volatile long topicCacheTimestamp = 0;
++  
++  // Cache for partition sizes
++  private Map<String, Map<Integer, TopicPartitionVO>> partitionSizeCache = new ConcurrentHashMap<>();
++  private Map<String, Long> partitionSizeCacheTimestamp = new ConcurrentHashMap<>();
+ 
+   public KafkaHighLevelConsumer(KafkaConfiguration kafkaConfiguration) {
+     this.kafkaConfiguration = kafkaConfiguration;
+@@ -49,6 +59,16 @@
+ 
+   synchronized Map<Integer, TopicPartitionVO> getPartitionSize(String topic) {
+     initializeClient();
++    
++    // Check cache first
++    final long now = System.currentTimeMillis();
++    final Long cacheTimestamp = partitionSizeCacheTimestamp.get(topic);
++    if (cacheTimestamp != null && (now - cacheTimestamp) < CACHE_EXPIRY_MS) {
++      final var cached = partitionSizeCache.get(topic);
++      if (cached != null) {
++        return cached;
++      }
++    }
+ 
+     final var partitionInfoSet = kafkaConsumer.partitionsFor(topic);
+     kafkaConsumer.assign(partitionInfoSet.stream()
+@@ -76,6 +96,11 @@
+       final TopicPartitionVO partitionVo = partitionsVo.get(topicPartition.partition());
+       partitionVo.setSize(latestOffset);
+     });
++    
++    // Update cache
++    partitionSizeCache.put(topic, partitionsVo);
++    partitionSizeCacheTimestamp.put(topic, now);
++    
+     return partitionsVo;
+   }
+ 
+@@ -197,6 +222,24 @@
+ 
+   synchronized Map<String, TopicVO> getTopicInfos(String[] topics) {
+     initializeClient();
++    
++    // Check if cache is still valid
++    final long now = System.currentTimeMillis();
++    final boolean cacheValid = !topicCache.isEmpty() && (now - topicCacheTimestamp) < CACHE_EXPIRY_MS;
++    
++    if (cacheValid) {
++      if (topics.length == 0) {
++        return new HashMap<>(topicCache);
++      }
++      final var result = new HashMap<String, TopicVO>(topics.length, 1f);
++      for (var topic : topics) {
++        if (topicCache.containsKey(topic)) {
++          result.put(topic, topicCache.get(topic));
++        }
++      }
++      return result;
++    }
++    
+     final var topicSet = kafkaConsumer.listTopics().keySet();
+     if (topics.length == 0) {
+       topics = Arrays.copyOf(topicSet.toArray(), topicSet.size(), String[].class);
+@@ -208,6 +251,11 @@
+         topicVos.put(topic, getTopicInfo(topic));
+       }
+     }
++    
++    // Update cache
++    topicCache.clear();
++    topicCache.putAll(topicVos);
++    topicCacheTimestamp = now;
+ 
+     return topicVos;
+   }
+--- project_original/src/main/java/kafdrop/service/KafkaMonitorImpl.java	2026-01-10 01:41:20.000000000 +0000
++++ project/src/main/java/kafdrop/service/KafkaMonitorImpl.java	2026-07-12 08:03:05.264496063 +0000
+@@ -30,6 +30,7 @@
+ 
+ import java.util.*;
+ import java.util.Map.*;
++import java.util.concurrent.*;
+ import java.util.function.*;
+ import java.util.stream.*;
+ 
+@@ -38,10 +39,15 @@
+ @Service
+ public final class KafkaMonitorImpl implements KafkaMonitor {
+   private static final Logger LOG = LoggerFactory.getLogger(KafkaMonitorImpl.class);
++  private static final long CONSUMER_CACHE_EXPIRY_MS = 30000; // 30 seconds
+ 
+   private final KafkaHighLevelConsumer highLevelConsumer;
+ 
+   private final KafkaHighLevelAdminClient highLevelAdminClient;
++  
++  // Cache for consumer offsets
++  private volatile List<ConsumerGroupOffsets> consumerGroupOffsetsCache = Collections.emptyList();
++  private volatile long consumerGroupOffsetsCacheTimestamp = 0;
+ 
+   public KafkaMonitorImpl(KafkaHighLevelConsumer highLevelConsumer, KafkaHighLevelAdminClient highLevelAdminClient) {
+     this.highLevelConsumer = highLevelConsumer;
+@@ -309,9 +315,26 @@
+   }
+ 
+   private List<ConsumerGroupOffsets> getConsumerOffsets(Set<String> topics) {
++    final long now = System.currentTimeMillis();
++    
++    // Check if cache is valid
++    if (!consumerGroupOffsetsCache.isEmpty() && (now - consumerGroupOffsetsCacheTimestamp) < CONSUMER_CACHE_EXPIRY_MS) {
++      return consumerGroupOffsetsCache.stream()
++          .map(offsets -> offsets.forTopics(topics))
++          .filter(not(ConsumerGroupOffsets::isEmpty))
++          .collect(Collectors.toList());
++    }
++    
+     final var consumerGroups = highLevelAdminClient.listConsumerGroups();
+-    return consumerGroups.stream()
++    final var allOffsets = consumerGroups.stream()
+         .map(this::resolveOffsets)
++        .collect(Collectors.toList());
++    
++    // Update cache with all offsets (unfiltered by topics)
++    consumerGroupOffsetsCache = allOffsets;
++    consumerGroupOffsetsCacheTimestamp = now;
++    
++    return allOffsets.stream()
+         .map(offsets -> offsets.forTopics(topics))
+         .filter(not(ConsumerGroupOffsets::isEmpty))
+         .collect(Collectors.toList());

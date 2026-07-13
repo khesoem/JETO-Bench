@@ -1,0 +1,71 @@
+--- /workspace/project_original/core/src/main/java/org/neo4j/ogm/session/delegates/SaveEventDelegate.java	2026-01-09 21:58:48.000000000 +0000
++++ /workspace/project/core/src/main/java/org/neo4j/ogm/session/delegates/SaveEventDelegate.java	2026-07-11 22:53:19.847921627 +0000
+@@ -18,9 +18,11 @@
+  */
+ package org.neo4j.ogm.session.delegates;
+ 
++import java.util.ArrayDeque;
+ import java.util.ArrayList;
+ import java.util.Collection;
+ import java.util.Collections;
++import java.util.Deque;
+ import java.util.HashMap;
+ import java.util.HashSet;
+ import java.util.Iterator;
+@@ -92,16 +94,47 @@
+ 
+     private void preSaveCheck(Object object) {
+ 
+-        if (visit(object)) {
+-            logger.debug("visiting: {}", object);
+-            for (Object child : children(object)) {
+-                preSaveCheck(child);
+-            }
+-            if (!preSaveFired(object) && dirty(object)) {
+-                firePreSave(object);
++        Deque<Object> stack = new ArrayDeque<>();
++        Deque<Boolean> processingFlags = new ArrayDeque<>();
++
++        stack.push(object);
++        processingFlags.push(true); // true means we need to process children first
++
++        while (!stack.isEmpty()) {
++            Object current = stack.peek();
++            boolean needsChildProcessing = processingFlags.peek();
++
++            if (needsChildProcessing) {
++                // First time seeing this object, mark as visited and process children
++                if (visit(current)) {
++                    logger.debug("visiting: {}", current);
++                    // Mark that we've started processing children
++                    processingFlags.pop();
++                    processingFlags.push(false);
++
++                    // Push children in reverse order
++                    List<Object> children = children(current);
++                    for (int i = children.size() - 1; i >= 0; i--) {
++                        stack.push(children.get(i));
++                        processingFlags.push(true);
++                    }
++                } else {
++                    // Already visited, pop and continue
++                    stack.pop();
++                    processingFlags.pop();
++                    if (logger.isDebugEnabled()) {
++                        logger.debug("already visited: {}", current);
++                    }
++                }
++            } else {
++                // All children processed, now process current object
++                stack.pop();
++                processingFlags.pop();
++
++                if (!preSaveFired(current) && dirty(current)) {
++                    firePreSave(current);
++                }
+             }
+-        } else if (logger.isDebugEnabled()) {
+-            logger.debug("already visited: {}", object);
+         }
+     }
+ 

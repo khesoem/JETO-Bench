@@ -1,0 +1,20 @@
+--- project_original/model/jpa/src/main/java/org/keycloak/events/jpa/JpaEventQuery.java	2026-01-08 21:38:56.000000000 +0000
++++ project/model/jpa/src/main/java/org/keycloak/events/jpa/JpaEventQuery.java	2026-07-10 11:29:35.583137640 +0000
+@@ -161,6 +161,7 @@
+         }
+ 
+         TypedQuery<EventEntity> query = em.createQuery(cq);
++        query.setHint("org.hibernate.readOnly", true);
+ 
+         return closing(paginateQuery(query, firstResult, maxResults).getResultStream().map(JpaEventStoreProvider::convertEvent));
+     }
+--- project_original/model/jpa/src/main/java/org/keycloak/events/jpa/JpaAdminEventQuery.java	2026-01-08 21:38:56.000000000 +0000
++++ project/model/jpa/src/main/java/org/keycloak/events/jpa/JpaAdminEventQuery.java	2026-07-10 11:29:39.593289903 +0000
+@@ -181,6 +181,7 @@
+         }
+ 
+         TypedQuery<AdminEventEntity> query = em.createQuery(cq);
++        query.setHint("org.hibernate.readOnly", true);
+ 
+         return closing(paginateQuery(query, firstResult, maxResults).getResultStream().map(JpaEventStoreProvider::convertAdminEvent));
+     }

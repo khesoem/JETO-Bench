@@ -1,0 +1,42 @@
+--- project_original/independent-projects/arc/processor/src/main/java/io/quarkus/arc/processor/ComponentsProviderGenerator.java	2026-01-09 16:10:42.000000000 +0000
++++ project/independent-projects/arc/processor/src/main/java/io/quarkus/arc/processor/ComponentsProviderGenerator.java	2026-07-11 17:14:19.424085271 +0000
+@@ -1,6 +1,5 @@
+ package io.quarkus.arc.processor;
+ 
+-import static java.util.stream.Collectors.toList;
+ import static org.objectweb.asm.Opcodes.ACC_PRIVATE;
+ import static org.objectweb.asm.Opcodes.ACC_PUBLIC;
+ 
+@@ -368,9 +367,12 @@
+             List<String> paramTypes = new ArrayList<>();
+ 
+             if (!observer.isSynthetic()) {
+-                List<InjectionPointInfo> injectionPoints = observer.getInjection().injectionPoints.stream()
+-                        .filter(ip -> !BuiltinBean.resolvesTo(ip))
+-                        .collect(toList());
++                List<InjectionPointInfo> injectionPoints = new ArrayList<>();
++                for (InjectionPointInfo ip : observer.getInjection().injectionPoints) {
++                    if (!BuiltinBean.resolvesTo(ip)) {
++                        injectionPoints.add(ip);
++                    }
++                }
+                 // First param - declaring bean
+                 params.add(addMethod.invokeInterfaceMethod(MethodDescriptors.MAP_GET,
+                         beanIdToBeanHandle, addMethod.load(observer.getDeclaringBean().getIdentifier())));
+@@ -589,8 +591,14 @@
+                 throw new IllegalStateException("No bean type found for: " + bean);
+             }
+ 
+-            List<InjectionPointInfo> injectionPoints = bean.getInjections().stream().flatMap(i -> i.injectionPoints.stream())
+-                    .filter(ip -> !ip.isDelegate() && !BuiltinBean.resolvesTo(ip)).collect(toList());
++            List<InjectionPointInfo> injectionPoints = new ArrayList<>();
++            for (Injection injection : bean.getInjections()) {
++                for (InjectionPointInfo ip : injection.injectionPoints) {
++                    if (!ip.isDelegate() && !BuiltinBean.resolvesTo(ip)) {
++                        injectionPoints.add(ip);
++                    }
++                }
++            }
+             List<ResultHandle> params = new ArrayList<>();
+             List<String> paramTypes = new ArrayList<>();
+ 

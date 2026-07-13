@@ -1,0 +1,11 @@
+--- a/spring-modulith-core/src/main/java/org/springframework/modulith/core/PackageName.java
++++ b/spring-modulith-core/src/main/java/org/springframework/modulith/core/PackageName.java
+@@ -183,7 +183,7 @@ class PackageName implements Comparable<PackageName> {
+ 	}
+ 
+ 	boolean isDirectParentOf(PackageName reference) {
+-		return this.equals(getParent());
++		return this.equals(reference.getParent());
+ 	}
+ 
+ 	/**

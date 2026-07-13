@@ -1,0 +1,44 @@
+--- /workspace/project_original/services/src/main/java/org/keycloak/authentication/authenticators/client/ClientAssertionState.java	2026-01-09 13:35:51.000000000 +0000
++++ /workspace/project/services/src/main/java/org/keycloak/authentication/authenticators/client/ClientAssertionState.java	2026-07-11 13:53:09.006213505 +0000
+@@ -80,9 +80,9 @@
+                 event.detail(Details.CLIENT_ASSERTION_ISSUER, token.getIssuer());
+                 event.detail(Details.CLIENT_ASSERTION_SUB, token.getSubject());
+ 
+-                if (token.getSubject() != null) {
+-                    client = context.getRealm().getClientByClientId(token.getSubject());
+-                }
++                // Don't look up client by token subject here.
++                // For non-federated auth, the subject matches clientId but the lookup is done later in the validator.
++                // For federated auth, the subject is a different identifier and the lookup is done in the strategy.
+             }
+ 
+             return new ClientAssertionState(client, clientAssertionType, clientAssertion, jws, token);
+--- /workspace/project_original/services/src/main/java/org/keycloak/authentication/authenticators/client/ClientAssertionState.java	2026-01-09 13:35:51.000000000 +0000
++++ /workspace/project/services/src/main/java/org/keycloak/authentication/authenticators/client/ClientAssertionState.java	2026-07-11 13:53:09.006213505 +0000
+@@ -80,9 +80,9 @@
+                 event.detail(Details.CLIENT_ASSERTION_ISSUER, token.getIssuer());
+                 event.detail(Details.CLIENT_ASSERTION_SUB, token.getSubject());
+ 
+-                if (token.getSubject() != null) {
+-                    client = context.getRealm().getClientByClientId(token.getSubject());
+-                }
++                // Don't look up client by token subject here.
++                // For non-federated auth, the subject matches clientId but the lookup is done later in the validator.
++                // For federated auth, the subject is a different identifier and the lookup is done in the strategy.
+             }
+ 
+             return new ClientAssertionState(client, clientAssertionType, clientAssertion, jws, token);
+--- /workspace/project_original/services/src/main/java/org/keycloak/authentication/authenticators/client/AbstractJWTClientValidator.java	2026-01-09 13:35:49.000000000 +0000
++++ /workspace/project/services/src/main/java/org/keycloak/authentication/authenticators/client/AbstractJWTClientValidator.java	2026-07-11 13:53:26.638883628 +0000
+@@ -115,6 +115,11 @@
+         ClientModel client = clientAssertionState.getClient();
+ 
+         if (client == null) {
++            // Look up client by clientId (token subject) for non-federated auth
++            client = context.getRealm().getClientByClientId(clientId);
++        }
++
++        if (client == null) {
+             return failure(AuthenticationFlowError.CLIENT_NOT_FOUND);
+         } else {
+             context.getEvent().client(client.getClientId());

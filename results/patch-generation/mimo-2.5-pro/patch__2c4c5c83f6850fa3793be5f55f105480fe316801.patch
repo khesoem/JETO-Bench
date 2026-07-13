@@ -1,0 +1,429 @@
+--- /workspace/project_original/core/src/main/java/org/neo4j/ogm/metadata/ClassInfo.java	2026-01-09 21:35:54.000000000 +0000
++++ /workspace/project/core/src/main/java/org/neo4j/ogm/metadata/ClassInfo.java	2026-07-11 20:29:40.544245073 +0000
+@@ -378,23 +378,29 @@
+             .orElseThrow(() -> new MetadataException("No internal identity field found for class: " + this.className));
+     }
+ 
+-    private synchronized void initIdentityField() {
++    private void initIdentityField() {
+ 
+         if (identityField != null) {
+             return;
+         }
+ 
+-        Collection<FieldInfo> identityFields = getFieldInfos(FieldInfo::isInternalIdentity);
+-        if (identityFields.size() == 1) {
+-            this.identityField = Optional.of(identityFields.iterator().next());
+-        } else if (identityFields.size() > 1) {
+-            throw new MetadataException("Expected exactly one internal identity field (@Id with " +
+-                "InternalIdStrategy), found " + identityFields.size() + " " + identityFields);
+-        } else {
+-            this.identityField = fieldsInfo.fields().stream()
+-                .filter(f -> "id".equals(f.getName()))
+-                .filter(f -> "java.lang.Long".equals(f.getTypeDescriptor()))
+-                .findFirst();
++        synchronized (this) {
++            if (identityField != null) {
++                return;
++            }
++
++            Collection<FieldInfo> identityFields = getFieldInfos(FieldInfo::isInternalIdentity);
++            if (identityFields.size() == 1) {
++                this.identityField = Optional.of(identityFields.iterator().next());
++            } else if (identityFields.size() > 1) {
++                throw new MetadataException("Expected exactly one internal identity field (@Id with " +
++                    "InternalIdStrategy), found " + identityFields.size() + " " + identityFields);
++            } else {
++                this.identityField = fieldsInfo.fields().stream()
++                    .filter(f -> "id".equals(f.getName()))
++                    .filter(f -> "java.lang.Long".equals(f.getTypeDescriptor()))
++                    .findFirst();
++            }
+         }
+     }
+ 
+@@ -473,44 +479,50 @@
+     }
+ 
+     @SuppressWarnings("HiddenField")
+-    private synchronized void initPropertyFields() {
++    private void initPropertyFields() {
+         if (fieldInfos != null) {
+             return;
+         }
+ 
+-        Collection<FieldInfo> fields = fieldsInfo().fields();
++        synchronized (this) {
++            if (fieldInfos != null) {
++                return;
++            }
++
++            Collection<FieldInfo> fields = fieldsInfo().fields();
+ 
+-        FieldInfo optionalIdentityField = identityFieldOrNull();
+-        Set<FieldInfo> fieldInfos = new HashSet<>(fields.size());
+-        Map<String, FieldInfo> propertyFields = new HashMap<>(fields.size());
++            FieldInfo optionalIdentityField = identityFieldOrNull();
++            Set<FieldInfo> fieldInfos = new HashSet<>(fields.size());
++            Map<String, FieldInfo> propertyFields = new HashMap<>(fields.size());
+ 
+-        for (FieldInfo fieldInfo : fields) {
+-            if (fieldInfo != optionalIdentityField && !fieldInfo.isLabelField()
+-                && !fieldInfo.hasAnnotation(StartNode.class)
+-                && !fieldInfo.hasAnnotation(EndNode.class)) {
++            for (FieldInfo fieldInfo : fields) {
++                if (fieldInfo != optionalIdentityField && !fieldInfo.isLabelField()
++                    && !fieldInfo.hasAnnotation(StartNode.class)
++                    && !fieldInfo.hasAnnotation(EndNode.class)) {
+ 
+-                if (!fieldInfo.getAnnotations().has(Property.class)) {
++                    if (!fieldInfo.getAnnotations().has(Property.class)) {
+ 
+-                    // If a field is not marked explicitly as a property but is persistable as such, add it.
+-                    if (fieldInfo.persistableAsProperty()) {
++                        // If a field is not marked explicitly as a property but is persistable as such, add it.
++                        if (fieldInfo.persistableAsProperty()) {
++                            fieldInfos.add(fieldInfo);
++                            propertyFields.put(fieldInfo.property(), fieldInfo);
++                        }
++                    } else if (fieldInfo.persistableAsProperty()) {
++
++                        // If it is marked as a property, than it should be persistable as such
+                         fieldInfos.add(fieldInfo);
+                         propertyFields.put(fieldInfo.property(), fieldInfo);
+-                    }
+-                } else if (fieldInfo.persistableAsProperty()) {
+-
+-                    // If it is marked as a property, than it should be persistable as such
+-                    fieldInfos.add(fieldInfo);
+-                    propertyFields.put(fieldInfo.property(), fieldInfo);
+-                } else {
++                    } else {
+ 
+-                    // Otherwise throw a fitting exception
+-                    throw new InvalidPropertyFieldException(fieldInfo);
++                        // Otherwise throw a fitting exception
++                        throw new InvalidPropertyFieldException(fieldInfo);
++                    }
+                 }
+             }
+-        }
+ 
+-        this.fieldInfos = fieldInfos;
+-        this.propertyFields = propertyFields;
++            this.fieldInfos = fieldInfos;
++            this.propertyFields = propertyFields;
++        }
+     }
+ 
+     /**
+@@ -539,25 +551,31 @@
+         return relationshipFields;
+     }
+ 
+-    private synchronized void initRelationshipFields() {
++    private void initRelationshipFields() {
+         if (relationshipFields != null) {
+             return;
+         }
+ 
+-        FieldInfo optionalIdentityField = identityFieldOrNull();
+-        Set<FieldInfo> identifiedRelationshipFields = new HashSet<>();
+-        for (FieldInfo fieldInfo : fieldsInfo().fields()) {
+-            if (fieldInfo == optionalIdentityField) {
+-                continue;
++        synchronized (this) {
++            if (relationshipFields != null) {
++                return;
+             }
+ 
+-            if (fieldInfo.getAnnotations().has(Relationship.class)) {
+-                identifiedRelationshipFields.add(fieldInfo);
+-            } else if (!fieldInfo.persistableAsProperty()) {
+-                identifiedRelationshipFields.add(fieldInfo);
++            FieldInfo optionalIdentityField = identityFieldOrNull();
++            Set<FieldInfo> identifiedRelationshipFields = new HashSet<>();
++            for (FieldInfo fieldInfo : fieldsInfo().fields()) {
++                if (fieldInfo == optionalIdentityField) {
++                    continue;
++                }
++
++                if (fieldInfo.getAnnotations().has(Relationship.class)) {
++                    identifiedRelationshipFields.add(fieldInfo);
++                } else if (!fieldInfo.persistableAsProperty()) {
++                    identifiedRelationshipFields.add(fieldInfo);
++                }
+             }
++            this.relationshipFields = Collections.unmodifiableSet(identifiedRelationshipFields);
+         }
+-        this.relationshipFields = Collections.unmodifiableSet(identifiedRelationshipFields);
+     }
+ 
+     /**
+@@ -858,27 +876,33 @@
+         return indexFields.values();
+     }
+ 
+-    private synchronized void initIndexFields() {
++    private void initIndexFields() {
+         if (indexFields != null) {
+             return;
+         }
+ 
+-        Map<String, FieldInfo> indexes = new HashMap<>();
++        synchronized (this) {
++            if (indexFields != null) {
++                return;
++            }
++
++            Map<String, FieldInfo> indexes = new HashMap<>();
+ 
+-        Field[] declaredFields = cls.getDeclaredFields();
++            Field[] declaredFields = cls.getDeclaredFields();
+ 
+-        for (FieldInfo fieldInfo : fieldsInfo().fields()) {
+-            if (isDeclaredField(declaredFields, fieldInfo.getName()) &&
+-                (fieldInfo.hasAnnotation(Index.class) || fieldInfo.hasAnnotation(Id.class))) {
++            for (FieldInfo fieldInfo : fieldsInfo().fields()) {
++                if (isDeclaredField(declaredFields, fieldInfo.getName()) &&
++                    (fieldInfo.hasAnnotation(Index.class) || fieldInfo.hasAnnotation(Id.class))) {
+ 
+-                String propertyValue = fieldInfo.property();
+-                if (fieldInfo.hasAnnotation(Property.class.getName())) {
+-                    propertyValue = fieldInfo.property();
++                    String propertyValue = fieldInfo.property();
++                    if (fieldInfo.hasAnnotation(Property.class.getName())) {
++                        propertyValue = fieldInfo.property();
++                    }
++                    indexes.put(propertyValue, fieldInfo);
+                 }
+-                indexes.put(propertyValue, fieldInfo);
+             }
++            this.indexFields = Collections.unmodifiableMap(indexes);
+         }
+-        this.indexFields = Collections.unmodifiableMap(indexes);
+     }
+ 
+     private static boolean isDeclaredField(Field[] declaredFields, String name) {
+@@ -896,41 +920,47 @@
+         return compositeIndexes;
+     }
+ 
+-    private synchronized void initCompositeIndexFields() {
++    private void initCompositeIndexFields() {
+         if (compositeIndexes != null) {
+             return;
+         }
+ 
+-        // init property fields to be able to check existence of properties
+-        initPropertyFields();
++        synchronized (this) {
++            if (compositeIndexes != null) {
++                return;
++            }
+ 
+-        CompositeIndex[] annotations = cls.getDeclaredAnnotationsByType(CompositeIndex.class);
+-        List<CompositeIndex> result = new ArrayList<>(annotations.length);
++            // init property fields to be able to check existence of properties
++            initPropertyFields();
+ 
+-        for (CompositeIndex annotation : annotations) {
+-            String[] properties = annotation.value().length > 0 ? annotation.value() : annotation.properties();
++            CompositeIndex[] annotations = cls.getDeclaredAnnotationsByType(CompositeIndex.class);
++            List<CompositeIndex> result = new ArrayList<>(annotations.length);
+ 
+-            if (properties.length < 1) {
+-                throw new MetadataException("Incorrect CompositeIndex definition on " + className +
+-                    ". Provide at least 1 property");
+-            }
++            for (CompositeIndex annotation : annotations) {
++                String[] properties = annotation.value().length > 0 ? annotation.value() : annotation.properties();
+ 
+-            for (String property : properties) {
+-                // Determine the original field in case the user uses a MapCompositeConverter.
+-                Matcher m = AutoIndexManager.COMPOSITE_KEY_MAP_COMPOSITE_PATTERN.matcher(property);
+-                if (m.matches()) {
+-                    property = m.group(1);
++                if (properties.length < 1) {
++                    throw new MetadataException("Incorrect CompositeIndex definition on " + className +
++                        ". Provide at least 1 property");
+                 }
+ 
+-                FieldInfo fieldInfo = propertyFields.get(property);
+-                if (fieldInfo == null) {
+-                    throw new MetadataException("Incorrect CompositeIndex definition on " + className + ". Property " +
+-                        property + " does not exists.");
++                for (String property : properties) {
++                    // Determine the original field in case the user uses a MapCompositeConverter.
++                    Matcher m = AutoIndexManager.COMPOSITE_KEY_MAP_COMPOSITE_PATTERN.matcher(property);
++                    if (m.matches()) {
++                        property = m.group(1);
++                    }
++
++                    FieldInfo fieldInfo = propertyFields.get(property);
++                    if (fieldInfo == null) {
++                        throw new MetadataException("Incorrect CompositeIndex definition on " + className + ". Property " +
++                            property + " does not exists.");
++                    }
+                 }
++                result.add(annotation);
+             }
+-            result.add(annotation);
++            this.compositeIndexes = Collections.unmodifiableList(result);
+         }
+-        this.compositeIndexes = Collections.unmodifiableList(result);
+     }
+ 
+     public FieldInfo primaryIndexField() {
+@@ -1022,21 +1052,27 @@
+         return postLoadMethod;
+     }
+ 
+-    private synchronized void initPostLoadMethod() {
++    private void initPostLoadMethod() {
+         if (isPostLoadMethodMapped) {
+             return;
+         }
+ 
+-        Collection<MethodInfo> possiblePostLoadMethods = methodsInfo
+-            .findMethodInfoBy(methodInfo -> methodInfo.hasAnnotation(PostLoad.class));
+-        if (possiblePostLoadMethods.size() > 1) {
+-            throw new MetadataException(String
+-                .format("Cannot have more than one post load method annotated with @PostLoad for class '%s'",
+-                    this.className));
+-        }
++        synchronized (this) {
++            if (isPostLoadMethodMapped) {
++                return;
++            }
++
++            Collection<MethodInfo> possiblePostLoadMethods = methodsInfo
++                .findMethodInfoBy(methodInfo -> methodInfo.hasAnnotation(PostLoad.class));
++            if (possiblePostLoadMethods.size() > 1) {
++                throw new MetadataException(String
++                    .format("Cannot have more than one post load method annotated with @PostLoad for class '%s'",
++                        this.className));
++            }
+ 
+-        postLoadMethod = possiblePostLoadMethods.stream().findFirst().orElse(null);
+-        isPostLoadMethodMapped = true;
++            postLoadMethod = possiblePostLoadMethods.stream().findFirst().orElse(null);
++            isPostLoadMethodMapped = true;
++        }
+     }
+ 
+     public FieldInfo getFieldInfo(String propertyName) {
+@@ -1064,20 +1100,26 @@
+         return endNodeReader.orElse(null);
+     }
+ 
+-    private synchronized void initEndNodeReader() {
++    private void initEndNodeReader() {
+         if (endNodeReader != null) {
+             return;
+         }
+ 
+-        if (isRelationshipEntity()) {
+-            endNodeReader = fieldsInfo().fields().stream()
+-                .filter(fieldInfo -> fieldInfo.getAnnotations().get(EndNode.class) != null)
+-                .findFirst();
+-            if (!endNodeReader.isPresent()) {
+-                LOGGER.warn("Failed to find an @EndNode on {}", name());
++        synchronized (this) {
++            if (endNodeReader != null) {
++                return;
++            }
++
++            if (isRelationshipEntity()) {
++                endNodeReader = fieldsInfo().fields().stream()
++                    .filter(fieldInfo -> fieldInfo.getAnnotations().get(EndNode.class) != null)
++                    .findFirst();
++                if (!endNodeReader.isPresent()) {
++                    LOGGER.warn("Failed to find an @EndNode on {}", name());
++                }
++            } else {
++                endNodeReader = Optional.empty();
+             }
+-        } else {
+-            endNodeReader = Optional.empty();
+         }
+     }
+ 
+@@ -1091,21 +1133,27 @@
+         return startNodeReader.orElse(null);
+     }
+ 
+-    private synchronized void initStartNodeReader() {
++    private void initStartNodeReader() {
+         if (startNodeReader != null) {
+             return;
+         }
+ 
+-        if (isRelationshipEntity()) {
+-            startNodeReader = fieldsInfo().fields().stream()
+-                .filter(fieldInfo -> fieldInfo.getAnnotations().get(StartNode.class) != null)
+-                .findFirst();
++        synchronized (this) {
++            if (startNodeReader != null) {
++                return;
++            }
++
++            if (isRelationshipEntity()) {
++                startNodeReader = fieldsInfo().fields().stream()
++                    .filter(fieldInfo -> fieldInfo.getAnnotations().get(StartNode.class) != null)
++                    .findFirst();
+ 
+-            if (!startNodeReader.isPresent()) {
+-                LOGGER.warn("Failed to find an @StartNode on {}", name());
++                if (!startNodeReader.isPresent()) {
++                    LOGGER.warn("Failed to find an @StartNode on {}", name());
++                }
++            } else {
++                startNodeReader = Optional.empty();
+             }
+-        } else {
+-            startNodeReader = Optional.empty();
+         }
+     }
+ 
+@@ -1139,23 +1187,29 @@
+         return versionField.orElse(null);
+     }
+ 
+-    private synchronized void initVersionField() {
++    private void initVersionField() {
+         if (versionField != null) {
+             return;
+         }
+ 
+-        Collection<FieldInfo> fields = getFieldInfos(FieldInfo::isVersionField);
++        synchronized (this) {
++            if (versionField != null) {
++                return;
++            }
++
++            Collection<FieldInfo> fields = getFieldInfos(FieldInfo::isVersionField);
+ 
+-        if (fields.size() > 1) {
+-            throw new MetadataException("Only one version field is allowed, found " + fields);
+-        }
++            if (fields.size() > 1) {
++                throw new MetadataException("Only one version field is allowed, found " + fields);
++            }
+ 
+-        Iterator<FieldInfo> iterator = fields.iterator();
+-        if (iterator.hasNext()) {
+-            versionField = Optional.of(iterator.next());
+-        } else {
+-            // cache that there is no version field
+-            versionField = Optional.empty();
++            Iterator<FieldInfo> iterator = fields.iterator();
++            if (iterator.hasNext()) {
++                versionField = Optional.of(iterator.next());
++            } else {
++                // cache that there is no version field
++                versionField = Optional.empty();
++            }
+         }
+     }
+ 

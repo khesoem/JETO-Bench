@@ -1,0 +1,38 @@
+--- model/map-hot-rod/src/main/java/org/keycloak/models/map/storage/hotRod/connections/DefaultHotRodConnectionProviderFactory.java	2026-01-10 00:33:17.000000000 +0000
++++ model/map-hot-rod/src/main/java/org/keycloak/models/map/storage/hotRod/connections/DefaultHotRodConnectionProviderFactory.java	2026-07-12 05:32:34.448674199 +0000
+@@ -122,18 +122,18 @@
+         String reindexCaches = config.get("reindexCaches", null);
+         RemoteCacheManagerAdmin administration = remoteCacheManager.administration();
+         if (reindexCaches != null && reindexCaches.equals("all")) {
+-            LOG.infof("Reindexing all caches. This can take a long time to complete. While the rebuild operation is in progress, queries might return fewer results.");
++            LOG.infof("Updating index schema for all caches. This should be quick and won't cause downtime.");
+             remoteCaches.stream()
+-                    .peek(remoteCacheManager::getCache) // access the caches to force their creation, otherwise reindexing fails if cache doesn't exist
+-                    .forEach(administration::reindexCache);
++                    .peek(remoteCacheManager::getCache) // access the caches to force their creation, otherwise updating index schema fails if cache doesn't exist
++                    .forEach(administration::updateIndexSchema);
+         } else if (reindexCaches != null && !reindexCaches.isEmpty()){
+             Arrays.stream(reindexCaches.split(","))
+                 .map(String::trim)
+                     .filter(e -> !e.isEmpty())
+                     .filter(remoteCaches::contains)
+-                    .peek(cacheName -> LOG.infof("Reindexing %s cache. This can take a long time to complete. While the rebuild operation is in progress, queries might return fewer results.", cacheName))
+-                    .peek(remoteCacheManager::getCache) // access the caches to force their creation, otherwise reindexing fails if cache doesn't exist
+-                    .forEach(administration::reindexCache);
++                    .peek(cacheName -> LOG.infof("Updating index schema for %s cache. This should be quick and won't cause downtime.", cacheName))
++                    .peek(remoteCacheManager::getCache) // access the caches to force their creation, otherwise updating index schema fails if cache doesn't exist
++                    .forEach(administration::updateIndexSchema);
+         }
+ 
+         LOG.infof("HotRod client configuration was successful.");
+--- quarkus/config-api/src/main/java/org/keycloak/config/StorageOptions.java	2026-01-10 00:33:17.000000000 +0000
++++ quarkus/config-api/src/main/java/org/keycloak/config/StorageOptions.java	2026-07-12 05:32:41.067926971 +0000
+@@ -320,7 +320,7 @@
+             .category(OptionCategory.STORAGE)
+             .defaultValue("all")
+             .expectedValues(StorageOptions::getExpectedCacheNames)
+-            .description("List of cache names that should be indexed on Keycloak startup. Defaulting to `all` which means all caches are reindexed.")
++            .description("List of cache names for which the index schema should be updated on Keycloak startup. Defaulting to `all` which means all caches will have their index schema updated.")
+             .hidden()
+             .build();
+ 
