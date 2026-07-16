@@ -1,0 +1,129 @@
+--- model/infinispan/src/main/java/org/keycloak/cluster/infinispan/remote/RemoteInfinispanNotificationManager.java	2026-01-09 13:41:17.000000000 +0000
++++ model/infinispan/src/main/java/org/keycloak/cluster/infinispan/remote/RemoteInfinispanNotificationManager.java	2026-07-14 20:04:26.513274200 +0000
+@@ -17,7 +17,9 @@
+ 
+ package org.keycloak.cluster.infinispan.remote;
+ 
++import java.io.IOException;
+ import java.lang.invoke.MethodHandles;
++import java.nio.ByteBuffer;
+ import java.util.Collection;
+ import java.util.List;
+ import java.util.concurrent.ConcurrentHashMap;
+@@ -40,15 +42,16 @@
+ import org.infinispan.client.hotrod.annotation.ClientCacheEntryModified;
+ import org.infinispan.client.hotrod.annotation.ClientCacheEntryRemoved;
+ import org.infinispan.client.hotrod.annotation.ClientListener;
+-import org.infinispan.client.hotrod.event.ClientCacheEntryCreatedEvent;
+-import org.infinispan.client.hotrod.event.ClientCacheEntryModifiedEvent;
++import org.infinispan.client.hotrod.event.ClientCacheEntryCustomEvent;
+ import org.infinispan.client.hotrod.event.ClientCacheEntryRemovedEvent;
+ import org.infinispan.client.hotrod.exceptions.HotRodClientException;
++import org.infinispan.commons.io.UnsignedNumeric;
++import org.infinispan.commons.marshall.Marshaller;
+ import org.jboss.logging.Logger;
+ 
+ import static org.keycloak.cluster.infinispan.InfinispanClusterProvider.TASK_KEY_PREFIX;
+ 
+-@ClientListener
++@ClientListener(converterFactoryName = "___eager-key-value-version-converter", useRawData = true)
+ public class RemoteInfinispanNotificationManager {
+ 
+     private static final Logger logger = Logger.getLogger(MethodHandles.lookup().lookupClass());
+@@ -58,11 +61,13 @@
+     private final Executor executor;
+     private final RemoteCache<String, Object> workCache;
+     private final NodeInfo nodeInfo;
++    private final Marshaller marshaller;
+ 
+     public RemoteInfinispanNotificationManager(Executor executor, RemoteCache<String, Object> workCache, NodeInfo nodeInfo) {
+         this.executor = executor;
+         this.workCache = workCache;
+         this.nodeInfo = nodeInfo;
++        this.marshaller = workCache.getRemoteCacheContainer().getMarshaller();
+     }
+ 
+     public void addClientListener() {
+@@ -119,16 +124,14 @@
+     }
+ 
+     @ClientCacheEntryCreated
+-    public void created(ClientCacheEntryCreatedEvent<String> event) {
+-        String key = event.getKey();
+-        hotrodEventReceived(key);
++    public void created(ClientCacheEntryCustomEvent<byte[]> event) {
++        eventReceived(event);
+     }
+ 
+ 
+     @ClientCacheEntryModified
+-    public void updated(ClientCacheEntryModifiedEvent<String> event) {
+-        String key = event.getKey();
+-        hotrodEventReceived(key);
++    public void updated(ClientCacheEntryCustomEvent<byte[]> event) {
++        eventReceived(event);
+     }
+ 
+ 
+@@ -138,21 +141,19 @@
+         taskFinished(key);
+     }
+ 
+-    private void hotrodEventReceived(String key) {
+-        // TODO [pruivo] cache event converter may work here with protostream
+-        workCache.getAsync(key).thenAcceptAsync(value -> eventReceived(key, value), executor);
+-    }
+-
+-    private void eventReceived(String key, Object obj) {
+-        if (!(obj instanceof WrapperClusterEvent event)) {
+-            // Items with the TASK_KEY_PREFIX might be gone fast once the locking is complete, therefore, don't log them.
+-            // It is still good to have the warning in case of real events return null because they have been, for example, expired
+-            if (obj == null && !key.startsWith(TASK_KEY_PREFIX)) {
+-                logger.warnf("Event object wasn't available in remote cache after event was received. Event key: %s", key);
++    private void eventReceived(ClientCacheEntryCustomEvent<byte[]> event) {
++        try {
++            var wrapperEvent = extractWrapperClusterEvent(event);
++            if (wrapperEvent == null) {
++                return;
+             }
+-            return;
++            eventReceived(wrapperEvent);
++        } catch (Exception e) {
++            logger.error("Error handling an event", e);
+         }
++    }
+ 
++    private void eventReceived(WrapperClusterEvent event) {
+         if (event.rejectEvent(nodeInfo.nodeName(), nodeInfo.siteName())) {
+             return;
+         }
+@@ -171,6 +172,29 @@
+         }
+     }
+ 
++    private WrapperClusterEvent extractWrapperClusterEvent(ClientCacheEntryCustomEvent<byte[]> event) throws IOException, ClassNotFoundException {
++        ByteBuffer rawData = ByteBuffer.wrap(event.getEventData());
++
++        // skip the key, we don't need it
++        skipElement(rawData);
++
++        // read the value
++        Object value = marshaller.objectFromByteBuffer(readElement(rawData));
++        return value instanceof WrapperClusterEvent wce ? wce : null;
++    }
++
++    private static void skipElement(ByteBuffer buffer) {
++        int length = UnsignedNumeric.readUnsignedInt(buffer);
++        buffer.position(buffer.position() + length);
++    }
++
++    private static byte[] readElement(ByteBuffer buffer) {
++        int length = UnsignedNumeric.readUnsignedInt(buffer);
++        byte[] element = new byte[length];
++        buffer.get(element);
++        return element;
++    }
++
+     private void taskFinished(String taskKey) {
+         TaskCallback callback = taskCallbacks.remove(taskKey);
+         if (callback == null) {

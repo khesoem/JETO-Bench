@@ -1,0 +1,90 @@
+--- connect-file-pulse-filesystems/filepulse-amazons3-fs/src/main/java/io/streamthoughts/kafka/connect/filepulse/fs/AmazonS3FileSystemListing.java	2026-01-09 12:23:34.000000000 +0000
++++ connect-file-pulse-filesystems/filepulse-amazons3-fs/src/main/java/io/streamthoughts/kafka/connect/filepulse/fs/AmazonS3FileSystemListing.java	2026-07-14 16:34:15.623584284 +0000
+@@ -95,12 +95,7 @@
+ 
+                 objectMetaList.addAll(objectListing.getObjectSummaries()
+                         .stream()
+-                        .map(s3ObjectSummary ->
+-                                new S3BucketKey(
+-                                        s3ObjectSummary.getBucketName(),
+-                                        s3ObjectSummary.getKey()
+-                                ))
+-                        .map(s3Storage::getObjectMetadata)
++                        .map(s3Storage::getObjectMetadataFromSummary)
+                         .filter(Objects::nonNull)
+                         .collect(Collectors.toList()));
+ 
+--- connect-file-pulse-filesystems/filepulse-amazons3-fs/src/main/java/io/streamthoughts/kafka/connect/filepulse/fs/AmazonS3Storage.java	2026-01-09 12:23:34.000000000 +0000
++++ connect-file-pulse-filesystems/filepulse-amazons3-fs/src/main/java/io/streamthoughts/kafka/connect/filepulse/fs/AmazonS3Storage.java	2026-07-14 16:35:18.810987746 +0000
+@@ -27,6 +27,7 @@
+ import com.amazonaws.services.s3.model.GetObjectMetadataRequest;
+ import com.amazonaws.services.s3.model.GetObjectRequest;
+ import com.amazonaws.services.s3.model.ObjectMetadata;
++import com.amazonaws.services.s3.model.S3ObjectSummary;
+ import com.amazonaws.services.s3.model.StorageClass;
+ import io.streamthoughts.kafka.connect.filepulse.source.FileObjectMeta;
+ import io.streamthoughts.kafka.connect.filepulse.source.GenericFileObjectMeta;
+@@ -186,6 +187,23 @@
+         );
+     }
+ 
++    /**
++     * Creates a {@link FileObjectMeta} from an {@link S3ObjectSummary} without making
++     * an additional HEAD request to S3 for object metadata. This method is more efficient
++     * than {@link #getObjectMetadata(S3BucketKey)} when listing objects from a bucket,
++     * as it uses the data already available in the S3ObjectSummary.
++     *
++     * @param s3ObjectSummary the S3 object summary.
++     * @return a new {@link FileObjectMeta}.
++     */
++    public FileObjectMeta getObjectMetadataFromSummary(final S3ObjectSummary s3ObjectSummary) {
++        final S3BucketKey s3Object = new S3BucketKey(
++                s3ObjectSummary.getBucketName(),
++                s3ObjectSummary.getKey()
++        );
++        return createFileObjectMetaFromSummary(s3Object, s3ObjectSummary);
++    }
++
+     private ObjectMetadata loadObjectMetadata(final S3BucketKey s3Object) {
+         var request = new GetObjectMetadataRequest(s3Object.bucketName(), s3Object.key());
+         try {
+@@ -279,5 +297,39 @@
+                 .withContentDigest(digest)
+                 .withUserDefinedMetadata(userDefinedMetadata)
+                 .build();
++    }
++
++    private static FileObjectMeta createFileObjectMetaFromSummary(final S3BucketKey s3Object,
++                                                                   final S3ObjectSummary s3ObjectSummary) {
++
++        final HashMap<String, Object> userDefinedMetadata = new HashMap<>();
++
++        userDefinedMetadata.put("s3.object.summary.bucketName", s3Object.bucketName());
++        userDefinedMetadata.put("s3.object.summary.key", s3Object.key());
++        userDefinedMetadata.put("s3.object.summary.etag", s3ObjectSummary.getETag());
++        userDefinedMetadata.put("s3.object.summary.storageClass", s3ObjectSummary.getStorageClass());
++
++        final String eTag = s3ObjectSummary.getETag();
++
++        FileObjectMeta.ContentDigest digest = null;
++        if (eTag != null) {
++            // ETag for simple uploads is the MD5 hash of the object content, enclosed in double quotes.
++            // For multipart uploads, the ETag is not the MD5 hash, but it can still be used as a digest.
++            // Remove surrounding quotes if present.
++            String etagValue = eTag;
++            if (eTag.startsWith("\"") && eTag.endsWith("\"")) {
++                etagValue = eTag.substring(1, eTag.length() - 1);
++            }
++            digest = new FileObjectMeta.ContentDigest(etagValue, "MD5");
++        }
++
++        return new GenericFileObjectMeta.Builder()
++                .withUri(s3Object.toURI())
++                .withName(s3Object.key())
++                .withContentLength(s3ObjectSummary.getSize())
++                .withLastModified(s3ObjectSummary.getLastModified())
++                .withContentDigest(digest)
++                .withUserDefinedMetadata(userDefinedMetadata)
++                .build();
+     }
+ }

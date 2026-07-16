@@ -1,0 +1,38 @@
+--- shardingsphere-features/shardingsphere-sharding/shardingsphere-sharding-core/src/main/java/org/apache/shardingsphere/sharding/algorithm/sharding/inline/InlineShardingAlgorithm.java	2026-01-11 17:16:26.000000000 +0000
++++ shardingsphere-features/shardingsphere-sharding/shardingsphere-sharding-core/src/main/java/org/apache/shardingsphere/sharding/algorithm/sharding/inline/InlineShardingAlgorithm.java	2026-07-15 19:55:20.921771440 +0000
+@@ -41,19 +41,23 @@
+     
+     private boolean allowRangeQuery;
+     
++    private String algorithmExpression;
++    
++    private final ThreadLocal<Closure<?>> closureThreadLocal = ThreadLocal.withInitial(this::createClosure);
++    
+     @Getter
+     @Setter
+     private Properties props = new Properties();
+     
+     @Override
+     public void init() {
++        String expression = props.getProperty(ALGORITHM_EXPRESSION_KEY);
++        Preconditions.checkNotNull(expression, "Inline sharding algorithm expression cannot be null.");
++        algorithmExpression = InlineExpressionParser.handlePlaceHolder(expression.trim());
+         allowRangeQuery = isAllowRangeQuery();
+     }
+     
+     private Closure<?> createClosure() {
+-        String expression = props.getProperty(ALGORITHM_EXPRESSION_KEY);
+-        Preconditions.checkNotNull(expression, "Inline sharding algorithm expression cannot be null.");
+-        String algorithmExpression = InlineExpressionParser.handlePlaceHolder(expression.trim());
+         Closure<?> result = new InlineExpressionParser(algorithmExpression).evaluateClosure().rehydrate(new Expando(), null, null);
+         result.setResolveStrategy(Closure.DELEGATE_ONLY);
+         return result;
+@@ -65,7 +69,7 @@
+     
+     @Override
+     public String doSharding(final Collection<String> availableTargetNames, final PreciseShardingValue<Comparable<?>> shardingValue) {
+-        Closure<?> closure = createClosure();
++        Closure<?> closure = closureThreadLocal.get();
+         closure.setProperty(shardingValue.getColumnName(), shardingValue.getValue());
+         return closure.call().toString();
+     }

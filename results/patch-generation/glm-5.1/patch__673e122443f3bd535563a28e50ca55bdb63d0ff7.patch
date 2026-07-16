@@ -1,0 +1,67 @@
+--- model/infinispan/src/main/java/org/keycloak/models/sessions/infinispan/PersistentUserSessionProvider.java	2026-01-09 02:18:29.000000000 +0000
++++ model/infinispan/src/main/java/org/keycloak/models/sessions/infinispan/PersistentUserSessionProvider.java	2026-07-14 01:26:46.058421259 +0000
+@@ -68,7 +68,7 @@
+ 
+ import java.nio.charset.StandardCharsets;
+ import java.util.Collection;
+-import java.util.Comparator;
++
+ import java.util.HashMap;
+ import java.util.Map;
+ import java.util.Objects;
+@@ -85,7 +85,6 @@
+ import java.util.stream.Stream;
+ 
+ import static org.keycloak.models.Constants.SESSION_NOTE_LIGHTWEIGHT_USER;
+-import static org.keycloak.utils.StreamsUtil.paginatedStream;
+ 
+ /**
+  * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
+@@ -291,6 +290,10 @@
+ 
+ 
+     protected Stream<UserSessionModel> getUserSessionsStream(RealmModel realm, UserSessionPredicate predicate, boolean offline) {
++        return getUserSessionsStream(realm, predicate, offline, 0, null);
++    }
++
++    protected Stream<UserSessionModel> getUserSessionsStream(RealmModel realm, UserSessionPredicate predicate, boolean offline, Integer firstResult, Integer maxResults) {
+         // fetch the offline user-sessions from the persistence provider
+         UserSessionPersisterProvider persister = session.getProvider(UserSessionPersisterProvider.class);
+         if (predicate.getUserId() != null) {
+@@ -306,7 +309,7 @@
+               user = session.users().getUserById(realm, predicate.getUserId());
+             }
+             if (user != null) {
+-                return persister.loadUserSessionsStream(realm, user, offline, 0, null)
++                return persister.loadUserSessionsStream(realm, user, offline, firstResult, maxResults)
+                         .filter(predicate.toModelPredicate())
+                         .map(s -> (UserSessionModel) getUserSession(realm, s.getId(), offline))
+                         .filter(Objects::nonNull);
+@@ -325,7 +328,7 @@
+             UserProvider userProvider = session.getProvider(UserProvider.class);
+             UserModel userModel = userProvider.searchForUserStream(realm, attributes, 0, null).findFirst().orElse(null);
+             return userModel != null ?
+-                    persister.loadUserSessionsStream(realm, userModel, offline, 0, null)
++                    persister.loadUserSessionsStream(realm, userModel, offline, firstResult, maxResults)
+                             .filter(predicate.toModelPredicate())
+                             .map(s -> (UserSessionModel) getUserSession(realm, s.getId(), offline))
+                             .filter(Objects::nonNull) :
+@@ -334,7 +337,7 @@
+ 
+         if (predicate.getClient() != null) {
+             ClientModel client = session.clients().getClientById(realm, predicate.getClient());
+-            return persister.loadUserSessionsStream(realm, client, offline, 0, null)
++            return persister.loadUserSessionsStream(realm, client, offline, firstResult, maxResults)
+                     .filter(predicate.toModelPredicate())
+                     .map(s -> (UserSessionModel) getUserSession(realm, s.getId(), offline))
+                     .filter(Objects::nonNull);
+@@ -397,8 +400,7 @@
+     protected Stream<UserSessionModel> getUserSessionsStream(final RealmModel realm, ClientModel client, Integer firstResult, Integer maxResults, final boolean offline) {
+         UserSessionPredicate predicate = UserSessionPredicate.create(realm.getId()).client(client.getId());
+ 
+-        return paginatedStream(getUserSessionsStream(realm, predicate, offline)
+-                .sorted(Comparator.comparing(UserSessionModel::getLastSessionRefresh)), firstResult, maxResults);
++        return getUserSessionsStream(realm, predicate, offline, firstResult, maxResults);
+     }
+ 
+     @Override

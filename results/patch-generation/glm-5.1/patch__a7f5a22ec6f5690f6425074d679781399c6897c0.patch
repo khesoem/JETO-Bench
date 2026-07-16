@@ -1,0 +1,132 @@
+--- /workspace/project_original/spring-cloud-function-adapters/spring-cloud-function-serverless-web/src/main/java/org/springframework/cloud/function/serverless/web/ProxyMvc.java	2026-01-09 21:11:14.000000000 +0000
++++ spring-cloud-function-adapters/spring-cloud-function-serverless-web/src/main/java/org/springframework/cloud/function/serverless/web/ProxyMvc.java	2026-07-15 00:08:47.100306456 +0000
+@@ -24,6 +24,7 @@
+ import java.util.Iterator;
+ import java.util.List;
+ import java.util.concurrent.CountDownLatch;
++import java.util.concurrent.atomic.AtomicBoolean;
+ 
+ import jakarta.servlet.AsyncContext;
+ import jakarta.servlet.Filter;
+@@ -65,12 +66,18 @@
+ 
+ 	private static Log LOG = LogFactory.getLog(ProxyMvc.class);
+ 
+-	private final DispatcherServlet dispatcher;
++	private volatile DispatcherServlet dispatcher;
+ 
+ 	private final ConfigurableWebApplicationContext applicationContext;
+ 
+ 	private ServletContext servletContext;
+ 
++	private final CountDownLatch initializedLatch = new CountDownLatch(1);
++
++	private final AtomicBoolean initialized = new AtomicBoolean(false);
++
++	private volatile IllegalStateException initException;
++
+ 	public ConfigurableWebApplicationContext getApplicationContext() {
+ 		return this.applicationContext;
+ 	}
+@@ -79,6 +86,10 @@
+ 		return this.servletContext;
+ 	}
+ 
++	public boolean isInitialized() {
++		return this.initialized.get();
++	}
++
+ 	public static ProxyMvc INSTANCE(ConfigurableWebApplicationContext applpicationContext) {
+ 		return new ProxyMvc(applpicationContext);
+ 	}
+@@ -96,34 +107,62 @@
+ 		this.applicationContext = applicationContext;
+ 		ProxyServletContext servletContext = new ProxyServletContext();
+ 		this.applicationContext.setServletContext(servletContext);
+-		this.applicationContext.refresh();
+ 
+-		if (this.applicationContext.containsBean(DispatcherServletAutoConfiguration.DEFAULT_DISPATCHER_SERVLET_BEAN_NAME)) {
+-			this.dispatcher = this.applicationContext.getBean(DispatcherServlet.class);
+-		}
+-		else {
+-			this.dispatcher = new DispatcherServlet(this.applicationContext);
+-			this.dispatcher.setDetectAllHandlerMappings(false);
+-			((GenericApplicationContext) this.applicationContext).registerBean(DispatcherServletAutoConfiguration.DEFAULT_DISPATCHER_SERVLET_BEAN_NAME,
+-					DispatcherServlet.class, () -> this.dispatcher);
+-		}
+-
+-		ServletRegistration.Dynamic reg = servletContext.addServlet(DispatcherServletAutoConfiguration.DEFAULT_DISPATCHER_SERVLET_BEAN_NAME, dispatcher);
+-		reg.setLoadOnStartup(1);
+-		this.servletContext = applicationContext.getServletContext();
+-		try {
+-			this.dispatcher.init(new ProxyServletConfig(this.servletContext));
+-		}
+-		catch (Exception e) {
+-			throw new IllegalStateException("Faild to create Spring MVC DispatcherServlet proxy", e);
+-		}
++		Thread initThread = new Thread(() -> {
++			try {
++				this.applicationContext.refresh();
++
++				DispatcherServlet localDispatcher;
++				if (this.applicationContext.containsBean(DispatcherServletAutoConfiguration.DEFAULT_DISPATCHER_SERVLET_BEAN_NAME)) {
++					localDispatcher = this.applicationContext.getBean(DispatcherServlet.class);
++				}
++				else {
++					localDispatcher = new DispatcherServlet(this.applicationContext);
++					localDispatcher.setDetectAllHandlerMappings(false);
++					((GenericApplicationContext) this.applicationContext).registerBean(DispatcherServletAutoConfiguration.DEFAULT_DISPATCHER_SERVLET_BEAN_NAME,
++							DispatcherServlet.class, () -> localDispatcher);
++				}
++
++				ServletRegistration.Dynamic reg = servletContext.addServlet(DispatcherServletAutoConfiguration.DEFAULT_DISPATCHER_SERVLET_BEAN_NAME, localDispatcher);
++				reg.setLoadOnStartup(1);
++				this.servletContext = applicationContext.getServletContext();
++				localDispatcher.init(new ProxyServletConfig(this.servletContext));
++				this.dispatcher = localDispatcher;
++				this.initialized.set(true);
++			}
++			catch (Exception e) {
++				this.initException = new IllegalStateException("Failed to create Spring MVC DispatcherServlet proxy", e);
++			}
++			finally {
++				this.initializedLatch.countDown();
++			}
++		}, "proxy-mvc-init");
++		initThread.setDaemon(true);
++		initThread.start();
+ 	}
+ 
+ 	public void stop() {
++		awaitInitialization();
+ 		this.applicationContext.stop();
+ 	}
+ 
+ 	/**
++	 * Wait for the asynchronous initialization to complete.
++	 */
++	public void awaitInitialization() {
++		try {
++			this.initializedLatch.await();
++			if (this.initException != null) {
++				throw this.initException;
++			}
++		}
++		catch (InterruptedException e) {
++			Thread.currentThread().interrupt();
++			throw new IllegalStateException("Interrupted while waiting for initialization", e);
++		}
++	}
++
++	/**
+ 	 * Perform a request and return a type that allows chaining further actions,
+ 	 * such as asserting expectations, on the result.
+ 	 *
+@@ -140,6 +179,7 @@
+ 
+ 
+ 	public void service(HttpServletRequest request, HttpServletResponse response, CountDownLatch latch) throws Exception {
++		awaitInitialization();
+ 		ProxyFilterChain filterChain = new ProxyFilterChain(this.dispatcher);
+ 		filterChain.doFilter(request, response);
+ 

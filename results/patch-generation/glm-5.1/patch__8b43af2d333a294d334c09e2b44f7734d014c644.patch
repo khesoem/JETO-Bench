@@ -1,0 +1,62 @@
+--- /workspace/project_original/src/main/java/org/springframework/data/elasticsearch/core/geo/GeoJsonPolygon.java	2026-01-09 21:30:43.000000000 +0000
++++ /workspace/project/src/main/java/org/springframework/data/elasticsearch/core/geo/GeoJsonPolygon.java	2026-07-15 01:40:19.260366862 +0000
+@@ -38,7 +38,7 @@
+ 
+ 	public static final String TYPE = "Polygon";
+ 
+-	private final List<GeoJsonLineString> coordinates = new ArrayList<>();
++	private final List<GeoJsonLineString> coordinates = new ArrayList<>(1);
+ 
+ 	private GeoJsonPolygon(GeoJsonLineString geoJsonLineString) {
+ 		Assert.notNull(geoJsonLineString, "geoJsonLineString must not be null");
+@@ -102,6 +102,13 @@
+ 	 */
+ 	public static GeoJsonPolygon of(GeoPoint first, GeoPoint second, GeoPoint third, GeoPoint fourth,
+ 			GeoPoint... others) {
++
++		Assert.notNull(first, "First point must not be null!");
++		Assert.notNull(second, "Second point must not be null!");
++		Assert.notNull(third, "Third point must not be null!");
++		Assert.notNull(fourth, "Fourth point must not be null!");
++		Assert.notNull(others, "Additional points must not be null!");
++
+ 		return new GeoJsonPolygon(GeoJsonLineString.ofGeoPoints(asList(first, second, third, fourth, others)));
+ 	}
+ 
+@@ -116,6 +123,13 @@
+ 	 * @return new {@link GeoJsonPolygon}.
+ 	 */
+ 	public GeoJsonPolygon withInnerRing(Point first, Point second, Point third, Point fourth, Point... others) {
++
++		Assert.notNull(first, "First point must not be null!");
++		Assert.notNull(second, "Second point must not be null!");
++		Assert.notNull(third, "Third point must not be null!");
++		Assert.notNull(fourth, "Fourth point must not be null!");
++		Assert.notNull(others, "Additional points must not be null!");
++
+ 		return withInnerRing(asList(first, second, third, fourth, others));
+ 	}
+ 
+@@ -131,6 +145,13 @@
+ 	 */
+ 	public GeoJsonPolygon withInnerRing(GeoPoint first, GeoPoint second, GeoPoint third, GeoPoint fourth,
+ 			GeoPoint... others) {
++
++		Assert.notNull(first, "First point must not be null!");
++		Assert.notNull(second, "Second point must not be null!");
++		Assert.notNull(third, "Third point must not be null!");
++		Assert.notNull(fourth, "Fourth point must not be null!");
++		Assert.notNull(others, "Additional points must not be null!");
++
+ 		return withInnerRingOfGeoPoints(asList(first, second, third, fourth, others));
+ 	}
+ 
+@@ -189,7 +210,7 @@
+ 	@SafeVarargs
+ 	private static <T> List<T> asList(T first, T second, T third, T fourth, T... others) {
+ 
+-		ArrayList<T> result = new ArrayList<>(3 + others.length);
++		ArrayList<T> result = new ArrayList<>(4 + others.length);
+ 
+ 		result.add(first);
+ 		result.add(second);

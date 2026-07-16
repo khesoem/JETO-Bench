@@ -1,0 +1,63 @@
+--- /workspace/project_original/quarkus/config-api/src/main/java/org/keycloak/config/StorageOptions.java	2026-01-10 00:33:17.000000000 +0000
++++ /workspace/project/quarkus/config-api/src/main/java/org/keycloak/config/StorageOptions.java	2026-07-15 11:21:18.750086653 +0000
+@@ -316,11 +316,11 @@
+             .hidden()
+             .build();
+ 
+-    public static final Option<String> STORAGE_HOTROD_CACHE_REINDEX = new OptionBuilder<>("storage-hotrod-cache-reindex", String.class)
++    public static final Option<String> STORAGE_HOTROD_INDEX_SCHEMA_UPDATE = new OptionBuilder<>("storage-hotrod-index-schema-update", String.class)
+             .category(OptionCategory.STORAGE)
+             .defaultValue("all")
+             .expectedValues(StorageOptions::getExpectedCacheNames)
+-            .description("List of cache names that should be indexed on Keycloak startup. Defaulting to `all` which means all caches are reindexed.")
++            .description("List of cache names for which the index schema should be updated on Keycloak startup. Defaulting to `all` which means all caches' index schemas are updated.")
+             .hidden()
+             .build();
+ 
+--- /workspace/project_original/model/map-hot-rod/src/main/java/org/keycloak/models/map/storage/hotRod/connections/DefaultHotRodConnectionProviderFactory.java	2026-01-10 00:33:17.000000000 +0000
++++ /workspace/project/model/map-hot-rod/src/main/java/org/keycloak/models/map/storage/hotRod/connections/DefaultHotRodConnectionProviderFactory.java	2026-07-15 11:21:33.307636183 +0000
+@@ -119,21 +119,21 @@
+         registerSchemata();
+ 
+ 
+-        String reindexCaches = config.get("reindexCaches", null);
++        String indexSchemaUpdateCaches = config.get("indexSchemaUpdateCaches", null);
+         RemoteCacheManagerAdmin administration = remoteCacheManager.administration();
+-        if (reindexCaches != null && reindexCaches.equals("all")) {
+-            LOG.infof("Reindexing all caches. This can take a long time to complete. While the rebuild operation is in progress, queries might return fewer results.");
++        if (indexSchemaUpdateCaches != null && indexSchemaUpdateCaches.equals("all")) {
++            LOG.infof("Updating index schema for all caches.");
+             remoteCaches.stream()
+-                    .peek(remoteCacheManager::getCache) // access the caches to force their creation, otherwise reindexing fails if cache doesn't exist
+-                    .forEach(administration::reindexCache);
+-        } else if (reindexCaches != null && !reindexCaches.isEmpty()){
+-            Arrays.stream(reindexCaches.split(","))
++                    .peek(remoteCacheManager::getCache) // access the caches to force their creation, otherwise updating index schema fails if cache doesn't exist
++                    .forEach(administration::updateIndexSchema);
++        } else if (indexSchemaUpdateCaches != null && !indexSchemaUpdateCaches.isEmpty()){
++            Arrays.stream(indexSchemaUpdateCaches.split(","))
+                 .map(String::trim)
+                     .filter(e -> !e.isEmpty())
+                     .filter(remoteCaches::contains)
+-                    .peek(cacheName -> LOG.infof("Reindexing %s cache. This can take a long time to complete. While the rebuild operation is in progress, queries might return fewer results.", cacheName))
+-                    .peek(remoteCacheManager::getCache) // access the caches to force their creation, otherwise reindexing fails if cache doesn't exist
+-                    .forEach(administration::reindexCache);
++                    .peek(cacheName -> LOG.infof("Updating index schema for %s cache.", cacheName))
++                    .peek(remoteCacheManager::getCache) // access the caches to force their creation, otherwise updating index schema fails if cache doesn't exist
++                    .forEach(administration::updateIndexSchema);
+         }
+ 
+         LOG.infof("HotRod client configuration was successful.");
+--- /workspace/project_original/quarkus/runtime/src/main/java/org/keycloak/quarkus/runtime/configuration/mappers/StoragePropertyMappers.java	2026-01-10 00:33:14.000000000 +0000
++++ /workspace/project/quarkus/runtime/src/main/java/org/keycloak/quarkus/runtime/configuration/mappers/StoragePropertyMappers.java	2026-07-15 11:21:50.891299945 +0000
+@@ -293,8 +293,8 @@
+                         .to("kc.spi-connections-hot-rod-default-configure-remote-caches")
+                         .paramLabel(Boolean.TRUE + "|" + Boolean.FALSE)
+                         .build(),
+-                fromOption(StorageOptions.STORAGE_HOTROD_CACHE_REINDEX)
+-                        .to("kc.spi-connections-hot-rod-default-reindex-caches")
++                fromOption(StorageOptions.STORAGE_HOTROD_INDEX_SCHEMA_UPDATE)
++                        .to("kc.spi-connections-hot-rod-default-index-schema-update-caches")
+                         .paramLabel("[cache1,cache2,...]|all")
+                         .build()
+         };

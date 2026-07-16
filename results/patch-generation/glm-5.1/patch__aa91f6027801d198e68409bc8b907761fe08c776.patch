@@ -1,0 +1,35 @@
+--- server-spi-private/src/main/java/org/keycloak/authorization/policy/evaluation/DefaultEvaluation.java	2026-01-09 01:52:58.000000000 +0000
++++ server-spi-private/src/main/java/org/keycloak/authorization/policy/evaluation/DefaultEvaluation.java	2026-07-13 23:45:15.316043062 +0000
+@@ -145,6 +145,8 @@
+     private Realm createRealm() {
+         return new Realm() {
+ 
++            private final Map<String, UserModel> userCache = new HashMap<>();
++
+             @Override
+             public boolean isUserInGroup(String id, String groupId, boolean checkParent) {
+                 KeycloakSession session = authorizationProvider.getKeycloakSession();
+@@ -169,6 +171,15 @@
+             }
+ 
+             private UserModel getUser(String id, KeycloakSession session) {
++                UserModel cached = userCache.get(id);
++                if (cached != null) {
++                    return cached;
++                }
++                // Also cache null results to avoid repeated failed lookups
++                if (userCache.containsKey(id)) {
++                    return null;
++                }
++
+                 RealmModel realm = session.getContext().getRealm();
+                 UserModel user = session.users().getUserById(realm, id);
+ 
+@@ -182,6 +193,7 @@
+                     user = session.users().getServiceAccount(realm.getClientById(id));
+                 }
+ 
++                userCache.put(id, user);
+                 return user;
+             }
+ 

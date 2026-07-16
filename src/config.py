@@ -63,7 +63,7 @@ openhands = {
     'working-dir': os.environ['workingdir'],
     'openhands-files-dir': 'auxiliary/openhands-files',
     'llm-api-key': os.environ['OPENHANDS_API_KEY'],
-    'llm-model': 'openrouter/xiaomi/mimo-v2.5-pro',
+    'llm-model': 'openrouter/z-ai/glm-5.1',
     'llm-timeout': 3000,
     'max-iterations': 100,
 }

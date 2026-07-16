@@ -1,0 +1,29 @@
+--- /workspace/project_original/independent-projects/arc/runtime/src/main/java/io/quarkus/arc/ArcContainerImpl.java	2026-01-09 17:25:44.000000000 +0000
++++ /workspace/project/independent-projects/arc/runtime/src/main/java/io/quarkus/arc/ArcContainerImpl.java	2026-07-14 23:30:00.639811653 +0000
+@@ -47,7 +47,7 @@
+ 
+     private static final Logger LOGGER = Logger.getLogger(ArcContainerImpl.class.getPackage().getName());
+ 
+-    private final String id;
++    private final LazyValue<String> id;
+ 
+     private final AtomicBoolean running;
+ 
+@@ -69,7 +69,7 @@
+     private final List<ResourceReferenceProvider> resourceProviders;
+ 
+     public ArcContainerImpl() {
+-        id = UUID.randomUUID().toString();
++        id = new LazyValue<>(() -> UUID.randomUUID().toString());
+         running = new AtomicBoolean(true);
+         beans = new ArrayList<>();
+         interceptors = new ArrayList<>();
+@@ -252,7 +252,7 @@
+ 
+     @Override
+     public String toString() {
+-        return "ArcContainerImpl [id=" + id + ", running=" + running + ", beans=" + beans.size() + ", observers="
++        return "ArcContainerImpl [id=" + id.get() + ", running=" + running + ", beans=" + beans.size() + ", observers="
+                 + observers.size() + ", scopes="
+                 + getScopes() + "]";
+     }

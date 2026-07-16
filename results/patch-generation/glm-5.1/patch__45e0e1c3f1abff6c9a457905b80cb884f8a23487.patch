@@ -1,0 +1,87 @@
+--- a/src/main/java/com/github/mhewedy/expressions/ExpressionsRepositoryImpl.java
++++ b/src/main/java/com/github/mhewedy/expressions/ExpressionsRepositoryImpl.java
+@@ -52,8 +52,10 @@ public class ExpressionsRepositoryImpl<T, ID>
+         private final Expressions expressions;
+ 
+         @Override
+         public Predicate toPredicate(Root<T> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+-            query.distinct(true);   // to eliminate duplicate in case of one-to-many and many-to-many associations
++            if (ExpressionsPredicateBuilder.containsPluralAttributes(root, expressions)) {
++                query.distinct(true);
++            }
+             return ExpressionsPredicateBuilder.getPredicate(root, cb, expressions);
+         }
+     }
+
+--- a/src/main/java/com/github/mhewedy/expressions/ExpressionsPredicateBuilder.java
++++ b/src/main/java/com/github/mhewedy/expressions/ExpressionsPredicateBuilder.java
+@@ -44,6 +44,62 @@ class ExpressionsPredicateBuilder {
+         return cb.and(array);
+     }
+ 
++    static <T> boolean containsPluralAttributes(Root<T> root, Expressions expressions) {
++        return containsPluralAttributes(root.getModel(), expressions.getExpressions());
++    }
++
++    @SuppressWarnings({"rawtypes"})
++    private static boolean containsPluralAttributes(ManagedType<?> type, List<Expression> expressions) {
++        for (Expression expression : expressions) {
++
++            if (expression instanceof SingularExpression) {
++                SingularExpression singularExpression = (SingularExpression) expression;
++                final String field = extractField(singularExpression.field);
++                Attribute<?, ?> attribute = getAttribute(type, field);
++
++                if (attribute.isCollection()) {
++                    return true;
++                }
++
++                if (attribute.isAssociation()) {
++                    final String subField = extractSubField(singularExpression.field);
++                    if (!subField.isEmpty()) {
++                        final SingularExpression subExpression =
++                                new SingularExpression(subField, singularExpression.operator, singularExpression.value);
++                        if (containsPluralAttributes(extractSubFieldType(attribute), singletonList(subExpression))) {
++                            return true;
++                        }
++                    }
++                }
++
++            } else if (expression instanceof ListExpression) {
++                ListExpression listExpression = (ListExpression) expression;
++                final String field = extractField(listExpression.field);
++                Attribute<?, ?> attribute = getAttribute(type, field);
++
++                if (attribute.isCollection()) {
++                    return true;
++                }
++
++                if (attribute.isAssociation()) {
++                    final String subField = extractSubField(listExpression.field);
++                    if (!subField.isEmpty()) {
++                        final ListExpression subExpression =
++                                new ListExpression(subField, listExpression.operator, listExpression.values);
++                        if (containsPluralAttributes(extractSubFieldType(attribute), singletonList(subExpression))) {
++                            return true;
++                        }
++                    }
++                }
++
++            } else if (expression instanceof OrExpression) {
++                if (containsPluralAttributes(type, ((OrExpression) expression).expressions)) {
++                    return true;
++                }
++
++            } else if (expression instanceof AndExpression) {
++                if (containsPluralAttributes(type, ((AndExpression) expression).expressions)) {
++                    return true;
++                }
++            }
++        }
++
++        return false;
++    }
++
+     @SuppressWarnings({"rawtypes", "unchecked"})
+     private static List<Predicate> getPredicates(CriteriaBuilder cb,
+                                                  Path<?> from, ManagedType<?> type,

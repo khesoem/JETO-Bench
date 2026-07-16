@@ -1,0 +1,37 @@
+diff --git a/core/src/main/java/org/neo4j/ogm/metadata/FieldInfo.java b/core/src/main/java/org/neo4j/ogm/metadata/FieldInfo.java
+index ab73b15..9073289 100644
+--- a/core/src/main/java/org/neo4j/ogm/metadata/FieldInfo.java
++++ b/core/src/main/java/org/neo4j/ogm/metadata/FieldInfo.java
+@@ -88,6 +88,11 @@ public class FieldInfo {
+      */
+     private volatile Optional<Class<?>> convertedType;
+ 
++    /**
++     * Cached relationship value, lazily computed.
++     */
++    private volatile Optional<String> relationshipCache;
++
+     /**
+      * Constructs a new {@link FieldInfo} based on the given arguments.
+      *
+@@ -161,6 +166,20 @@ public class FieldInfo {
+     }
+ 
+     public String relationship() {
++        Optional<String> loadedRelationshipCache = this.relationshipCache;
++        if (loadedRelationshipCache == null) {
++            synchronized (this) {
++                loadedRelationshipCache = this.relationshipCache;
++                if (loadedRelationshipCache == null) {
++                    this.relationshipCache = Optional.ofNullable(computeRelationship());
++                    loadedRelationshipCache = this.relationshipCache;
++                }
++            }
++        }
++        return loadedRelationshipCache.orElse(null);
++    }
++
++    private String computeRelationship() {
+         if (this.containingClassInfo.relationshipFields().contains(this)) {
+             if (annotations != null) {
+                 AnnotationInfo relationshipAnnotation = annotations.get(Relationship.class);

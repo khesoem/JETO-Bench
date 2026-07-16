@@ -1,0 +1,99 @@
+--- a/model/map-hot-rod/src/main/java/org/keycloak/models/map/storage/hotRod/authSession/HotRodRootAuthenticationSessionEntity.java
++++ b/model/map-hot-rod/src/main/java/org/keycloak/models/map/storage/hotRod/authSession/HotRodRootAuthenticationSessionEntity.java
+@@ -38,6 +38,7 @@
+ @ProtoDoc("@Indexed")
+ public class HotRodRootAuthenticationSessionEntity extends AbstractHotRodEntity {
+ 
++    @ProtoDoc("@Field(index = Index.YES, store = Store.YES)")
+     @ProtoField(number = 1, required = true)
+     public int entityVersion = 1;
+ 
+--- a/model/map-hot-rod/src/main/java/org/keycloak/models/map/storage/hotRod/client/HotRodClientEntity.java
++++ b/model/map-hot-rod/src/main/java/org/keycloak/models/map/storage/hotRod/client/HotRodClientEntity.java
+@@ -41,6 +41,7 @@
+ @ProtoDoc("@Indexed")
+ public class HotRodClientEntity extends AbstractHotRodEntity {
+ 
++    @ProtoDoc("@Field(index = Index.YES, store = Store.YES)")
+     @ProtoField(number = 1, required = true)
+     public int entityVersion = 1;
+ 
+--- a/model/map-hot-rod/src/main/java/org/keycloak/models/map/storage/hotRod/clientscope/HotRodClientScopeEntity.java
++++ b/model/map-hot-rod/src/main/java/org/keycloak/models/map/storage/hotRod/clientscope/HotRodClientScopeEntity.java
+@@ -40,6 +40,7 @@
+ @ProtoDoc("@Indexed")
+ public class HotRodClientScopeEntity extends AbstractHotRodEntity  {
+ 
++    @ProtoDoc("@Field(index = Index.YES, store = Store.YES)")
+     @ProtoField(number = 1, required = true)
+     public int entityVersion = 1;
+ 
+--- a/model/map-hot-rod/src/main/java/org/keycloak/models/map/storage/hotRod/group/HotRodGroupEntity.java
++++ b/model/map-hot-rod/src/main/java/org/keycloak/models/map/storage/hotRod/group/HotRodGroupEntity.java
+@@ -60,6 +60,7 @@
+         }
+     }
+ 
++    @ProtoDoc("@Field(index = Index.YES, store = Store.YES)")
+     @ProtoField(number = 1, required = true)
+     public int entityVersion = 1;
+ 
+--- a/model/map-hot-rod/src/main/java/org/keycloak/models/map/storage/hotRod/loginFailure/HotRodUserLoginFailureEntity.java
++++ b/model/map-hot-rod/src/main/java/org/keycloak/models/map/storage/hotRod/loginFailure/HotRodUserLoginFailureEntity.java
+@@ -31,6 +31,7 @@
+ @ProtoDoc("@Indexed")
+ public class HotRodUserLoginFailureEntity extends AbstractHotRodEntity {
+ 
++    @ProtoDoc("@Field(index = Index.YES, store = Store.YES)")
+     @ProtoField(number = 1, required = true)
+     public int entityVersion = 1;
+ 
+--- a/model/map-hot-rod/src/main/java/org/keycloak/models/map/storage/hotRod/realm/HotRodRealmEntity.java
++++ b/model/map-hot-rod/src/main/java/org/keycloak/models/map/storage/hotRod/realm/HotRodRealmEntity.java
+@@ -70,6 +70,7 @@
+ )
+ @ProtoDoc("@Indexed")
+ public class HotRodRealmEntity extends AbstractHotRodEntity {
++    @ProtoDoc("@Field(index = Index.YES, store = Store.YES)")
+     @ProtoField(number = 1, required = true)
+     public int entityVersion = 1;
+ 
+--- a/model/map-hot-rod/src/main/java/org/keycloak/models/map/storage/hotRod/role/HotRodRoleEntity.java
++++ b/model/map-hot-rod/src/main/java/org/keycloak/models/map/storage/hotRod/role/HotRodRoleEntity.java
+@@ -58,6 +58,7 @@
+         }
+     }
+ 
++    @ProtoDoc("@Field(index = Index.YES, store = Store.YES)")
+     @ProtoField(number = 1, required = true)
+     public int entityVersion = 1;
+ 
+--- a/model/map-hot-rod/src/main/java/org/keycloak/models/map/storage/hotRod/user/HotRodUserEntity.java
++++ b/model/map-hot-rod/src/main/java/org/keycloak/models/map/storage/hotRod/user/HotRodUserEntity.java
+@@ -50,6 +50,7 @@
+     @IgnoreForEntityImplementationGenerator
+     private static final Logger LOG = Logger.getLogger(HotRodUserEntity.class);
+ 
++    @ProtoDoc("@Field(index = Index.YES, store = Store.YES)")
+     @ProtoField(number = 1, required = true)
+     public int entityVersion = 1;
+ 
+--- a/model/map-hot-rod/src/main/java/org/keycloak/models/map/storage/hotRod/userSession/HotRodAuthenticatedClientSessionEntity.java
++++ b/model/map-hot-rod/src/main/java/org/keycloak/models/map/storage/hotRod/userSession/HotRodAuthenticatedClientSessionEntity.java
+@@ -34,6 +34,7 @@
+ @ProtoDoc("@Indexed")
+ public class HotRodAuthenticatedClientSessionEntity extends AbstractHotRodEntity {
+ 
++    @ProtoDoc("@Field(index = Index.YES, store = Store.YES)")
+     @ProtoField(number = 1, required = true)
+     public int entityVersion = 1;
+ 
+--- a/model/map-hot-rod/src/main/java/org/keycloak/models/map/storage/hotRod/userSession/HotRodUserSessionEntity.java
++++ b/model/map-hot-rod/src/main/java/org/keycloak/models/map/storage/hotRod/userSession/HotRodUserSessionEntity.java
+@@ -35,6 +35,7 @@
+ @ProtoDoc("@Indexed")
+ public class HotRodUserSessionEntity extends AbstractHotRodEntity {
+ 
++    @ProtoDoc("@Field(index = Index.YES, store = Store.YES)")
+     @ProtoField(number = 1, required = true)
+     public int entityVersion = 1;

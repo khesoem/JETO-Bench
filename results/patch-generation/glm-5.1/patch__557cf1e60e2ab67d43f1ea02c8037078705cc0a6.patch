@@ -1,0 +1,94 @@
+--- /workspace/project_original/model/infinispan/src/main/java/org/keycloak/models/sessions/infinispan/remote/RemoteInfinispanKeycloakTransaction.java	2026-01-09 01:59:23.000000000 +0000
++++ /workspace/project/model/infinispan/src/main/java/org/keycloak/models/sessions/infinispan/remote/RemoteInfinispanKeycloakTransaction.java	2026-07-14 00:46:43.720251285 +0000
+@@ -39,6 +39,24 @@
+ 
+     private final static Logger logger = Logger.getLogger(MethodHandles.lookup().lookupClass());
+ 
++    private static final Operation<?, ?> TOMBSTONE = new Operation<>() {
++        @Override
++        public CompletionStage<?> execute(RemoteCache cache) {
++            // noop - entry already removed from the cache or never existed
++            return CompletableFuture.completedFuture(null);
++        }
++
++        @Override
++        public boolean hasValue() {
++            return false;
++        }
++
++        @Override
++        public String toString() {
++            return "Tombstone after removal";
++        }
++    };
++
+     private final Map<K, Operation<K, V>> tasks = new LinkedHashMap<>();
+     private final RemoteCache<K, V> cache;
+     private Predicate<V> removePredicate;
+@@ -100,9 +118,14 @@
+         logger.tracef("Adding %s.remove(%S)", cache.getName(), key);
+ 
+         Operation<K, V> existing = tasks.get(key);
+-        if (existing != null && existing.canRemove()) {
+-            tasks.remove(key);
+-            return;
++        if (existing != null) {
++            if (existing.canRemove()) {
++                tasks.put(key, tombstone());
++                return;
++            }
++            if (isTombstone(existing)) {
++                return;
++            }
+         }
+ 
+         tasks.put(key, new RemoveOperation<>(key));
+@@ -111,8 +134,13 @@
+     public V get(K key) {
+         var existing = tasks.get(key);
+ 
+-        if (existing != null && existing.hasValue()) {
+-            return existing.getValue();
++        if (existing != null) {
++            if (isTombstone(existing)) {
++                return null;
++            }
++            if (existing.hasValue()) {
++                return existing.getValue();
++            }
+         }
+ 
+         // Should we have per-transaction cache for lookups?
+@@ -140,7 +168,20 @@
+         return Completable.fromCompletionStage(cache.removeAsync(key));
+     }
+ 
++    @SuppressWarnings("unchecked")
++    private Operation<K, V> tombstone() {
++        return (Operation<K, V>) TOMBSTONE;
++    }
++
++    private boolean isTombstone(Operation<K, V> operation) {
++        return operation == TOMBSTONE;
++    }
++
+     private boolean shouldCommitOperation(Operation<K, V> operation) {
++        // Skip tombstones - they are no-ops
++        if (isTombstone(operation)) {
++            return false;
++        }
+         // Commit if any:
+         // 1. it is a removal operation (no value to test the predicate).
+         // 2. remove predicate is not present.
+--- /workspace/project_original/model/infinispan/src/main/java/org/keycloak/models/sessions/infinispan/InfinispanKeycloakTransaction.java	2026-01-09 01:59:23.000000000 +0000
++++ /workspace/project/model/infinispan/src/main/java/org/keycloak/models/sessions/infinispan/InfinispanKeycloakTransaction.java	2026-07-14 00:46:59.851860629 +0000
+@@ -179,6 +179,9 @@
+         Object taskKey = getTaskKey(cache, key);
+         CacheTask current = tasks.get(taskKey);
+         if (current != null) {
++            if (current == TOMBSTONE) {
++                return null;
++            }
+             if (current instanceof CacheTaskWithValue) {
+                 return ((CacheTaskWithValue<V>) current).getValue();
+             }

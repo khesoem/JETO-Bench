@@ -1,0 +1,42 @@
+--- /workspace/project_original/sharding-core/sharding-core-common/src/main/java/org/apache/shardingsphere/core/metadata/ShardingMetaDataLoader.java	2026-01-10 06:42:03.000000000 +0000
++++ /workspace/project/sharding-core/sharding-core-common/src/main/java/org/apache/shardingsphere/core/metadata/ShardingMetaDataLoader.java	2026-07-16 10:32:23.160559201 +0000
+@@ -39,6 +39,11 @@
+ import java.util.Collections;
+ import java.util.Map.Entry;
+ import java.util.Optional;
++import java.util.LinkedHashMap;
++import java.util.concurrent.ExecutionException;
++import java.util.concurrent.ExecutorService;
++import java.util.concurrent.Executors;
++import java.util.concurrent.Future;
+ import java.util.stream.Collectors;
+ 
+ /**
+@@ -75,12 +80,25 @@
+         }
+         Map<String, List<DataNode>> dataNodeGroups = tableRule.getDataNodeGroups();
+         Map<String, TableMetaData> actualTableMetaDataMap = new HashMap<>(dataNodeGroups.size(), 1);
+-        // TODO use multiple threads to load meta data for different data sources
++        ExecutorService executorService = Executors.newFixedThreadPool(dataNodeGroups.size());
++        Map<String, Future<TableMetaData>> futureMap = new LinkedHashMap<>();
+         for (Entry<String, List<DataNode>> entry : dataNodeGroups.entrySet()) {
+             for (DataNode each : entry.getValue()) {
+-                actualTableMetaDataMap.put(each.getTableName(), TableMetaDataLoader.load(dataSourceMap.get(each.getDataSourceName()), each.getTableName(), databaseType.getName()));
++                futureMap.put(each.getTableName(), executorService.submit(() -> 
++                    TableMetaDataLoader.load(dataSourceMap.get(each.getDataSourceName()), each.getTableName(), databaseType.getName())));
+             }
+         }
++        for (Entry<String, Future<TableMetaData>> entry : futureMap.entrySet()) {
++            try {
++                actualTableMetaDataMap.put(entry.getKey(), entry.getValue().get());
++            } catch (final InterruptedException ex) {
++                Thread.currentThread().interrupt();
++                throw new ShardingSphereException("Interrupted while loading table meta data", ex);
++            } catch (final ExecutionException ex) {
++                throw new ShardingSphereException((Exception) ex.getCause());
++            }
++        }
++        executorService.shutdown();
+         checkUniformed(logicTableName, actualTableMetaDataMap);
+         return actualTableMetaDataMap.values().iterator().next();
+     }

@@ -1,0 +1,31 @@
+--- project_original/liquibase-standard/src/main/java/liquibase/util/StringUtil.java	2026-01-09 03:55:36.000000000 +0000
++++ project/liquibase-standard/src/main/java/liquibase/util/StringUtil.java	2026-07-14 03:24:55.141027767 +0000
+@@ -8,12 +8,12 @@
+ import liquibase.parser.SqlParserFactory;
+ import org.apache.commons.lang3.ArrayUtils;
+ import org.apache.commons.lang3.CharUtils;
+-import org.apache.commons.lang3.RandomStringUtils;
+ import org.apache.commons.lang3.StringUtils;
+ 
+ import java.io.UnsupportedEncodingException;
+ import java.nio.charset.StandardCharsets;
+ import java.util.*;
++import java.util.concurrent.ThreadLocalRandom;
+ import java.util.regex.Matcher;
+ import java.util.regex.Pattern;
+ 
+@@ -768,7 +768,13 @@
+      * @return an identifier of the desired length
+      */
+     public static String randomIdentifier(int len) {
+-        return RandomStringUtils.random(len, true, false);
++        final int uppercaseStart = 'A';
++        final int uppercaseEnd = 'Z';
++        StringBuilder sb = new StringBuilder(len);
++        for (int i = 0; i < len; i++) {
++            sb.append((char) ThreadLocalRandom.current().nextInt(uppercaseStart, uppercaseEnd + 1));
++        }
++        return sb.toString();
+     }
+ 
+     /**

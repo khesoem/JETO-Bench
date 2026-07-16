@@ -1,0 +1,78 @@
+--- src/main/java/org/apache/ibatis/transaction/jdbc/JdbcTransaction.java	2026-07-14 21:26:59.669869023 +0000
++++ src/main/java/org/apache/ibatis/transaction/jdbc/JdbcTransaction.java	2026-07-14 21:25:35.411664740 +0000
+@@ -44,15 +44,26 @@
+   protected DataSource dataSource;
+   protected TransactionIsolationLevel level;
+   protected boolean autoCommit;
++  protected boolean skipResetAutoCommit;
+ 
+   public JdbcTransaction(DataSource ds, TransactionIsolationLevel desiredLevel, boolean desiredAutoCommit) {
++    this(ds, desiredLevel, desiredAutoCommit, false);
++  }
++
++  public JdbcTransaction(DataSource ds, TransactionIsolationLevel desiredLevel, boolean desiredAutoCommit, boolean skipResetAutoCommit) {
+     dataSource = ds;
+     level = desiredLevel;
+     autoCommit = desiredAutoCommit;
++    this.skipResetAutoCommit = skipResetAutoCommit;
+   }
+ 
+   public JdbcTransaction(Connection connection) {
++    this(connection, false);
++  }
++
++  public JdbcTransaction(Connection connection, boolean skipResetAutoCommit) {
+     this.connection = connection;
++    this.skipResetAutoCommit = skipResetAutoCommit;
+   }
+ 
+   @Override
+@@ -86,7 +97,9 @@
+   @Override
+   public void close() throws SQLException {
+     if (connection != null) {
+-      resetAutoCommit();
++      if (!skipResetAutoCommit) {
++        resetAutoCommit();
++      }
+       if (log.isDebugEnabled()) {
+         log.debug("Closing JDBC Connection [" + connection + "]");
+       }
+--- src/main/java/org/apache/ibatis/transaction/jdbc/JdbcTransactionFactory.java	2026-07-14 21:26:59.675869251 +0000
++++ src/main/java/org/apache/ibatis/transaction/jdbc/JdbcTransactionFactory.java	2026-07-14 21:25:35.417664967 +0000
+@@ -16,6 +16,7 @@
+ package org.apache.ibatis.transaction.jdbc;
+ 
+ import java.sql.Connection;
++import java.util.Properties;
+ 
+ import javax.sql.DataSource;
+ 
+@@ -32,13 +33,25 @@
+  */
+ public class JdbcTransactionFactory implements TransactionFactory {
+ 
++  private boolean skipResetAutoCommit;
++
++  @Override
++  public void setProperties(Properties props) {
++    if (props != null) {
++      String skipResetAutoCommitProperty = props.getProperty("skipResetAutoCommit");
++      if (skipResetAutoCommitProperty != null) {
++        skipResetAutoCommit = Boolean.parseBoolean(skipResetAutoCommitProperty);
++      }
++    }
++  }
++
+   @Override
+   public Transaction newTransaction(Connection conn) {
+-    return new JdbcTransaction(conn);
++    return new JdbcTransaction(conn, skipResetAutoCommit);
+   }
+ 
+   @Override
+   public Transaction newTransaction(DataSource ds, TransactionIsolationLevel level, boolean autoCommit) {
+-    return new JdbcTransaction(ds, level, autoCommit);
++    return new JdbcTransaction(ds, level, autoCommit, skipResetAutoCommit);
+   }
+ }

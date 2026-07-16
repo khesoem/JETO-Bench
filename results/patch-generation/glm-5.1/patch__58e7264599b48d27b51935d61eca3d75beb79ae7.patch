@@ -1,0 +1,66 @@
+--- a/spring-cloud-zuul-ratelimit-core/src/main/java/com/marcosbarbero/cloud/autoconfigure/zuul/ratelimit/support/RateLimitConstants.java	2026-01-10 12:30:31.000000000 +0000
++++ b/spring-cloud-zuul-ratelimit-core/src/main/java/com/marcosbarbero/cloud/autoconfigure/zuul/ratelimit/support/RateLimitConstants.java	2026-07-16 16:03:37.019794864 +0000
+@@ -32,5 +32,7 @@
+     public static final String HEADER_REMAINING = "X-RateLimit-Remaining-";
+     public static final String HEADER_RESET = "X-RateLimit-Reset-";
+     public static final String REQUEST_START_TIME = "rateLimitRequestStartTime";
++    public static final String REQUEST_ROUTE = "rateLimitRoute";
++    public static final String REQUEST_POLICY = "rateLimitPolicy";
+ 
+ }
+--- a/spring-cloud-zuul-ratelimit-core/src/main/java/com/marcosbarbero/cloud/autoconfigure/zuul/ratelimit/filters/AbstractRateLimitFilter.java	2026-01-10 12:30:31.000000000 +0000
++++ b/spring-cloud-zuul-ratelimit-core/src/main/java/com/marcosbarbero/cloud/autoconfigure/zuul/ratelimit/filters/AbstractRateLimitFilter.java	2026-07-16 16:02:45.960857961 +0000
+@@ -31,6 +31,9 @@
+ import java.util.Optional;
+ import java.util.stream.Collectors;
+ 
++import static com.marcosbarbero.cloud.autoconfigure.zuul.ratelimit.support.RateLimitConstants.REQUEST_POLICY;
++import static com.marcosbarbero.cloud.autoconfigure.zuul.ratelimit.support.RateLimitConstants.REQUEST_ROUTE;
++
+ /**
+  * @author Marcos Barbero
+  * @author Liel Chayoun
+@@ -53,21 +56,35 @@
+ 
+     @Override
+     public boolean shouldFilter() {
+-        HttpServletRequest request = RequestContext.getCurrentContext().getRequest();
++        RequestContext ctx = RequestContext.getCurrentContext();
++        HttpServletRequest request = ctx.getRequest();
+         return properties.isEnabled() && !policy(route(request), request).isEmpty();
+     }
+ 
+     Route route(HttpServletRequest request) {
+-        String requestURI = urlPathHelper.getPathWithinApplication(request);
+-        return routeLocator.getMatchingRoute(requestURI);
++        RequestContext ctx = RequestContext.getCurrentContext();
++        Route route = (Route) ctx.get(REQUEST_ROUTE);
++        if (route == null) {
++            String requestURI = urlPathHelper.getPathWithinApplication(request);
++            route = routeLocator.getMatchingRoute(requestURI);
++            ctx.set(REQUEST_ROUTE, route);
++        }
++        return route;
+     }
+ 
+     protected List<Policy> policy(Route route, HttpServletRequest request) {
+-        String routeId = Optional.ofNullable(route).map(Route::getId).orElse(null);
+-        alreadyLimited = false;
+-        return properties.getPolicies(routeId).stream()
+-                .filter(policy -> applyPolicy(request, route, policy))
+-                .collect(Collectors.toList());
++        RequestContext ctx = RequestContext.getCurrentContext();
++        @SuppressWarnings("unchecked")
++        List<Policy> policy = (List<Policy>) ctx.get(REQUEST_POLICY);
++        if (policy == null) {
++            String routeId = Optional.ofNullable(route).map(Route::getId).orElse(null);
++            alreadyLimited = false;
++            policy = properties.getPolicies(routeId).stream()
++                    .filter(p -> applyPolicy(request, route, p))
++                    .collect(Collectors.toList());
++            ctx.set(REQUEST_POLICY, policy);
++        }
++        return policy;
+     }
+ 
+     private boolean applyPolicy(HttpServletRequest request, Route route, Policy policy) {

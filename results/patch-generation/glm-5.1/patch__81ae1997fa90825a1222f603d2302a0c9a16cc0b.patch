@@ -1,0 +1,39 @@
+diff --git a/presto-spi/src/main/java/io/prestosql/spi/type/TypeSignature.java b/presto-spi/src/main/java/io/prestosql/spi/type/TypeSignature.java
+index 34a00c1..f03c54b 100644
+--- a/presto-spi/src/main/java/io/prestosql/spi/type/TypeSignature.java
++++ b/presto-spi/src/main/java/io/prestosql/spi/type/TypeSignature.java
+@@ -38,6 +38,8 @@ public final class TypeSignature
+     private final String base;
+     private final List<TypeSignatureParameter> parameters;
+     private final boolean calculated;
++    private final String baseLowerCase;
++    private final int cachedHashCode;
+ 
+     public TypeSignature(String base, TypeSignatureParameter... parameters)
+     {
+@@ -54,6 +56,8 @@ public final class TypeSignature
+         this.parameters = List.copyOf(parameters);
+ 
+         this.calculated = parameters.stream().anyMatch(TypeSignatureParameter::isCalculated);
++        this.baseLowerCase = base.toLowerCase(Locale.ENGLISH);
++        this.cachedHashCode = Objects.hash(baseLowerCase, parameters);
+     }
+ 
+     public String getBase()
+@@ -156,14 +160,14 @@ public final class TypeSignature
+ 
+         TypeSignature other = (TypeSignature) o;
+ 
+-        return Objects.equals(this.base.toLowerCase(Locale.ENGLISH), other.base.toLowerCase(Locale.ENGLISH)) &&
++        return Objects.equals(this.baseLowerCase, other.baseLowerCase) &&
+                 Objects.equals(this.parameters, other.parameters);
+     }
+ 
+     @Override
+     public int hashCode()
+     {
+-        return Objects.hash(base.toLowerCase(Locale.ENGLISH), parameters);
++        return cachedHashCode;
+     }
+ 
+     // Type signature constructors for common types

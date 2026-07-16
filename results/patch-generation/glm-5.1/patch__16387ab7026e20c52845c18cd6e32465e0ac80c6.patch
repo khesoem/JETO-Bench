@@ -1,0 +1,30 @@
+diff --git a/liquibase-standard/src/main/java/liquibase/statement/ExecutablePreparedStatementBase.java b/liquibase-standard/src/main/java/liquibase/statement/ExecutablePreparedStatementBase.java
+index 650b6e1..c34f256 100644
+--- a/liquibase-standard/src/main/java/liquibase/statement/ExecutablePreparedStatementBase.java
++++ b/liquibase-standard/src/main/java/liquibase/statement/ExecutablePreparedStatementBase.java
+@@ -62,7 +62,10 @@ public abstract class ExecutablePreparedStatementBase implements ExecutablePrepa
+     //Cache the executeWithFlags method to avoid reflection overhead
+     private static final ThreadLocal<Method> EXECUTE_WITH_FLAGS_METHOD = new ThreadLocal<>();
+ 
+-    private final Map<String, Object> snapshotScratchPad = new HashMap<>();
++    //Cache the column snapshot to avoid expensive database queries for each prepared statement execution
++    //When running through many inserts with valueBlobFile, the column type will be the same within the same table
++    //So just storing the last seen snapshot is all we need
++    private static final ThreadLocal<Map<String, Object>> SNAPSHOT_SCRATCH_PAD = ThreadLocal.withInitial(HashMap::new);
+ 
+     protected ExecutablePreparedStatementBase(Database database, String catalogName, String schemaName, String
+             tableName, List<? extends ColumnConfig> columns, ChangeSet changeSet, ResourceAccessor resourceAccessor) {
+@@ -515,11 +518,11 @@ public abstract class ExecutablePreparedStatementBase implements ExecutablePrepa
+     }
+ 
+     private Object getScratchData(String key) {
+-        return snapshotScratchPad.get(key);
++        return SNAPSHOT_SCRATCH_PAD.get().get(key);
+     }
+ 
+     private Object setScratchData(String key, Object data) {
+-        return snapshotScratchPad.put(key, data);
++        return SNAPSHOT_SCRATCH_PAD.get().put(key, data);
+     }
+ 
+     protected long getContentLength(InputStream in) throws IOException {
