@@ -1,5 +1,5 @@
---- project_original/liquibase-standard/src/main/java/liquibase/util/StringUtil.java	2026-01-09 03:55:36.000000000 +0000
-+++ project/liquibase-standard/src/main/java/liquibase/util/StringUtil.java	2026-07-14 03:24:55.141027767 +0000
+--- a/liquibase-standard/src/main/java/liquibase/util/StringUtil.java	2026-01-09 03:55:36.000000000 +0000
++++ b/liquibase-standard/src/main/java/liquibase/util/StringUtil.java	2026-07-14 03:24:55.141027767 +0000
 @@ -8,12 +8,12 @@
  import liquibase.parser.SqlParserFactory;
  import org.apache.commons.lang3.ArrayUtils;

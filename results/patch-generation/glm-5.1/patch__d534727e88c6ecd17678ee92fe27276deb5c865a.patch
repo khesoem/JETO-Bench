@@ -1,5 +1,3 @@
-diff --git a/liquibase-standard/src/main/java/liquibase/snapshot/SnapshotGeneratorFactory.java b/liquibase-standard/src/main/java/liquibase/snapshot/SnapshotGeneratorFactory.java
-index af096fb..5489e3c 100644
 --- a/liquibase-standard/src/main/java/liquibase/snapshot/SnapshotGeneratorFactory.java
 +++ b/liquibase-standard/src/main/java/liquibase/snapshot/SnapshotGeneratorFactory.java
 @@ -198,7 +198,7 @@ public class SnapshotGeneratorFactory {

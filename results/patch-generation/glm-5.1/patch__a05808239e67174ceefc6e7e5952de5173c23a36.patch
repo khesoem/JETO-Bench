@@ -1,5 +1,5 @@
---- /workspace/project_original/dubbo-rpc/dubbo-rpc-api/src/main/java/org/apache/dubbo/rpc/protocol/AsyncToSyncInvoker.java	2026-01-10 02:39:15.000000000 +0000
-+++ /workspace/project/dubbo-rpc/dubbo-rpc-api/src/main/java/org/apache/dubbo/rpc/protocol/AsyncToSyncInvoker.java	2026-07-15 17:20:52.837963008 +0000
+--- a/dubbo-rpc/dubbo-rpc-api/src/main/java/org/apache/dubbo/rpc/protocol/AsyncToSyncInvoker.java	2026-01-10 02:39:15.000000000 +0000
++++ b/dubbo-rpc/dubbo-rpc-api/src/main/java/org/apache/dubbo/rpc/protocol/AsyncToSyncInvoker.java	2026-07-15 17:20:52.837963008 +0000
 @@ -17,6 +17,7 @@
  package org.apache.dubbo.rpc.protocol;
  

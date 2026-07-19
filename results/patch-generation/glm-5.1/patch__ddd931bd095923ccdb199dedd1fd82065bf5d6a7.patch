@@ -1,5 +1,5 @@
---- src/main/java/org/apache/ibatis/transaction/jdbc/JdbcTransaction.java	2026-07-14 21:26:59.669869023 +0000
-+++ src/main/java/org/apache/ibatis/transaction/jdbc/JdbcTransaction.java	2026-07-14 21:25:35.411664740 +0000
+--- a/src/main/java/org/apache/ibatis/transaction/jdbc/JdbcTransaction.java	2026-07-14 21:26:59.669869023 +0000
++++ b/src/main/java/org/apache/ibatis/transaction/jdbc/JdbcTransaction.java	2026-07-14 21:25:35.411664740 +0000
 @@ -44,15 +44,26 @@
    protected DataSource dataSource;
    protected TransactionIsolationLevel level;
@@ -38,8 +38,8 @@
        if (log.isDebugEnabled()) {
          log.debug("Closing JDBC Connection [" + connection + "]");
        }
---- src/main/java/org/apache/ibatis/transaction/jdbc/JdbcTransactionFactory.java	2026-07-14 21:26:59.675869251 +0000
-+++ src/main/java/org/apache/ibatis/transaction/jdbc/JdbcTransactionFactory.java	2026-07-14 21:25:35.417664967 +0000
+--- a/src/main/java/org/apache/ibatis/transaction/jdbc/JdbcTransactionFactory.java	2026-07-14 21:26:59.675869251 +0000
++++ b/src/main/java/org/apache/ibatis/transaction/jdbc/JdbcTransactionFactory.java	2026-07-14 21:25:35.417664967 +0000
 @@ -16,6 +16,7 @@
  package org.apache.ibatis.transaction.jdbc;
  

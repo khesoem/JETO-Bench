@@ -1,5 +1,5 @@
---- project_original/gateway/engine/es/src/main/java/io/apiman/gateway/engine/es/EsRegistry.java	2026-01-09 12:54:35.000000000 +0000
-+++ project/gateway/engine/es/src/main/java/io/apiman/gateway/engine/es/EsRegistry.java	2026-07-11 13:10:18.348530052 +0000
+--- a/gateway/engine/es/src/main/java/io/apiman/gateway/engine/es/EsRegistry.java	2026-01-09 12:54:35.000000000 +0000
++++ b/gateway/engine/es/src/main/java/io/apiman/gateway/engine/es/EsRegistry.java	2026-07-11 13:10:18.348530052 +0000
 @@ -95,7 +95,7 @@
              IndexRequest indexRequest = new IndexRequest(getIndexPrefix() + EsConstants.INDEX_APIS)
                      .id(id)
@@ -36,8 +36,8 @@
  
              DeleteResponse response = getClient().delete(deleteRequest, RequestOptions.DEFAULT);
              if (response.status().equals(RestStatus.OK)) {
---- project_original/manager/api/es/src/main/java/io/apiman/manager/api/es/EsStorage.java	2026-01-09 12:54:35.000000000 +0000
-+++ project/manager/api/es/src/main/java/io/apiman/manager/api/es/EsStorage.java	2026-07-11 13:10:59.211082735 +0000
+--- a/manager/api/es/src/main/java/io/apiman/manager/api/es/EsStorage.java	2026-01-09 12:54:35.000000000 +0000
++++ b/manager/api/es/src/main/java/io/apiman/manager/api/es/EsStorage.java	2026-07-11 13:10:59.211082735 +0000
 @@ -1985,8 +1985,7 @@
              String fullIndexName = getFullIndexName(type);
  

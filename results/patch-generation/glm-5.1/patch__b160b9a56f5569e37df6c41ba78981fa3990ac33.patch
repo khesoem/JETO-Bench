@@ -1,5 +1,3 @@
-diff --git a/core/src/main/java/org/neo4j/ogm/metadata/FieldInfo.java b/core/src/main/java/org/neo4j/ogm/metadata/FieldInfo.java
-index ab73b15..9073289 100644
 --- a/core/src/main/java/org/neo4j/ogm/metadata/FieldInfo.java
 +++ b/core/src/main/java/org/neo4j/ogm/metadata/FieldInfo.java
 @@ -88,6 +88,11 @@ public class FieldInfo {

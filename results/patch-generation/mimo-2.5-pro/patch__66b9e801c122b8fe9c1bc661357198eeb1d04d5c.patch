@@ -1,5 +1,5 @@
---- project_original/model/jpa/src/main/java/org/keycloak/events/jpa/JpaEventQuery.java	2026-01-08 21:38:56.000000000 +0000
-+++ project/model/jpa/src/main/java/org/keycloak/events/jpa/JpaEventQuery.java	2026-07-10 11:29:35.583137640 +0000
+--- a/model/jpa/src/main/java/org/keycloak/events/jpa/JpaEventQuery.java	2026-01-08 21:38:56.000000000 +0000
++++ b/model/jpa/src/main/java/org/keycloak/events/jpa/JpaEventQuery.java	2026-07-10 11:29:35.583137640 +0000
 @@ -161,6 +161,7 @@
          }
  
@@ -8,8 +8,8 @@
  
          return closing(paginateQuery(query, firstResult, maxResults).getResultStream().map(JpaEventStoreProvider::convertEvent));
      }
---- project_original/model/jpa/src/main/java/org/keycloak/events/jpa/JpaAdminEventQuery.java	2026-01-08 21:38:56.000000000 +0000
-+++ project/model/jpa/src/main/java/org/keycloak/events/jpa/JpaAdminEventQuery.java	2026-07-10 11:29:39.593289903 +0000
+--- a/model/jpa/src/main/java/org/keycloak/events/jpa/JpaAdminEventQuery.java	2026-01-08 21:38:56.000000000 +0000
++++ b/model/jpa/src/main/java/org/keycloak/events/jpa/JpaAdminEventQuery.java	2026-07-10 11:29:39.593289903 +0000
 @@ -181,6 +181,7 @@
          }
  

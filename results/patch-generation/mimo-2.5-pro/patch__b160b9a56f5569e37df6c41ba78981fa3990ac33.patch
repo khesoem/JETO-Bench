@@ -1,5 +1,5 @@
---- /tmp/FieldInfo_original.java	2026-07-11 22:17:16.179694031 +0000
-+++ /workspace/project/core/src/main/java/org/neo4j/ogm/metadata/FieldInfo.java	2026-07-11 22:16:29.801931047 +0000
+--- a/core/src/main/java/org/neo4j/ogm/metadata/FieldInfo.java	2026-07-11 22:17:16.179694031 +0000
++++ b/core/src/main/java/org/neo4j/ogm/metadata/FieldInfo.java	2026-07-11 22:16:29.801931047 +0000
 @@ -89,6 +89,12 @@
      private volatile Optional<Class<?>> convertedType;
  

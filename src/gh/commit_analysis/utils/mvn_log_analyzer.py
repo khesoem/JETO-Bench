@@ -142,7 +142,7 @@ class MvnwExecResults:
 
         diff = v2_arr - v1_scaled
 
-        wins = np.sum(diff < 0)   # V2 achieves at least 'margin' speedup
+        wins = np.sum(diff <= 0)   # V2 achieves at least 'margin' speedup
         losses = np.sum(diff > 0) # V2 fails to achieve the margin
         n = wins + losses
 

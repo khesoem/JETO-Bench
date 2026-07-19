@@ -1,5 +1,5 @@
---- /workspace/project_original/common/src/main/java/io/netty/util/internal/VarHandleFactory.java	2026-01-08 22:34:08.000000000 +0000
-+++ common/src/main/java/io/netty/util/internal/VarHandleFactory.java	2026-07-10 12:12:55.746930981 +0000
+--- a/common/src/main/java/io/netty/util/internal/VarHandleFactory.java	2026-01-08 22:34:08.000000000 +0000
++++ b/common/src/main/java/io/netty/util/internal/VarHandleFactory.java	2026-07-10 12:12:55.746930981 +0000
 @@ -35,6 +35,16 @@
      private static final VarHandle INT_BE_ARRAY_VIEW;
      private static final VarHandle SHORT_LE_ARRAY_VIEW;
@@ -142,8 +142,8 @@
 +        return BYTE_BE_BUFFER_VIEW;
 +    }
  }
---- /workspace/project_original/common/src/main/java/io/netty/util/internal/PlatformDependent.java	2026-01-08 22:34:08.000000000 +0000
-+++ common/src/main/java/io/netty/util/internal/PlatformDependent.java	2026-07-10 12:08:34.119996494 +0000
+--- a/common/src/main/java/io/netty/util/internal/PlatformDependent.java	2026-01-08 22:34:08.000000000 +0000
++++ b/common/src/main/java/io/netty/util/internal/PlatformDependent.java	2026-07-10 12:08:34.119996494 +0000
 @@ -678,6 +678,76 @@
          return null;
      }
@@ -221,8 +221,8 @@
      public static Object getObject(Object object, long fieldOffset) {
          return PlatformDependent0.getObject(object, fieldOffset);
      }
---- /workspace/project_original/buffer/src/main/java/io/netty/buffer/UnpooledDirectByteBuf.java	2026-01-08 22:34:08.000000000 +0000
-+++ buffer/src/main/java/io/netty/buffer/UnpooledDirectByteBuf.java	2026-07-10 12:11:57.042701867 +0000
+--- a/buffer/src/main/java/io/netty/buffer/UnpooledDirectByteBuf.java	2026-01-08 22:34:08.000000000 +0000
++++ b/buffer/src/main/java/io/netty/buffer/UnpooledDirectByteBuf.java	2026-07-10 12:11:57.042701867 +0000
 @@ -19,6 +19,8 @@
  import io.netty.util.internal.ObjectUtil;
  import io.netty.util.internal.PlatformDependent;
