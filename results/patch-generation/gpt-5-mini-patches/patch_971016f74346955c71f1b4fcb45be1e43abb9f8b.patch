@@ -1,5 +1,5 @@
---- /workspace/project_original/common/src/main/java/org/keycloak/common/util/SecretGenerator.java	2026-01-08 23:32:30.000000000 +0000
-+++ common/src/main/java/org/keycloak/common/util/SecretGenerator.java	2026-02-11 00:30:15.889840459 +0000
+--- a/common/src/main/java/org/keycloak/common/util/SecretGenerator.java	2026-01-08 23:32:30.000000000 +0000
++++ b/common/src/main/java/org/keycloak/common/util/SecretGenerator.java	2026-02-11 00:30:15.889840459 +0000
 @@ -16,6 +16,9 @@
  
      public static final char[] ALPHANUM = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789".toCharArray();

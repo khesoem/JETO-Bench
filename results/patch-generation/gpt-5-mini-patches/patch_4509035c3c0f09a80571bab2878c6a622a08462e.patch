@@ -1,5 +1,3 @@
-diff --git a/mockserver-core/src/main/java/org/mockserver/mock/HttpState.java b/mockserver-core/src/main/java/org/mockserver/mock/HttpState.java
-index de91525..bb38019 100644
 --- a/mockserver-core/src/main/java/org/mockserver/mock/HttpState.java
 +++ b/mockserver-core/src/main/java/org/mockserver/mock/HttpState.java
 @@ -162,7 +162,6 @@ public class HttpState {

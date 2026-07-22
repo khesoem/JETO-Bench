@@ -1,5 +1,5 @@
---- /workspace/project_original/server-spi-private/src/main/java/org/keycloak/userprofile/ValidationException.java
-+++ /workspace/project/server-spi-private/src/main/java/org/keycloak/userprofile/ValidationException.java
+--- a/server-spi-private/src/main/java/org/keycloak/userprofile/ValidationException.java
++++ b/server-spi-private/src/main/java/org/keycloak/userprofile/ValidationException.java
 @@ -39,10 +39,34 @@
  
  	private final Map<String, List<Error>> errors = new HashMap<>();

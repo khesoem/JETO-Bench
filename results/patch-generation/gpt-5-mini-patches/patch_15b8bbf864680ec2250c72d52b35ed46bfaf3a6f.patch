@@ -1,5 +1,5 @@
---- /workspace/project_original/common/src/main/java/io/netty/util/internal/PlatformDependent.java	2026-01-08 22:34:08.000000000 +0000
-+++ /workspace/project/common/src/main/java/io/netty/util/internal/PlatformDependent.java	2026-02-10 23:39:58.995424089 +0000
+--- a/common/src/main/java/io/netty/util/internal/PlatformDependent.java	2026-01-08 22:34:08.000000000 +0000
++++ b/common/src/main/java/io/netty/util/internal/PlatformDependent.java	2026-02-10 23:39:58.995424089 +0000
 @@ -264,8 +264,10 @@
      }
  

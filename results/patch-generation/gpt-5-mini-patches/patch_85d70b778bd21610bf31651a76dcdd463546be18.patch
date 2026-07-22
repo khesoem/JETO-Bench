@@ -1,5 +1,3 @@
-diff --git a/shardingsphere-infra/shardingsphere-infra-common/src/main/java/org/apache/shardingsphere/infra/metadata/schema/model/TableMetaData.java b/shardingsphere-infra/shardingsphere-infra-common/src/main/java/org/apache/shardingsphere/infra/metadata/schema/model/TableMetaData.java
-index c8d09a7..bbc79a1 100644
 --- a/shardingsphere-infra/shardingsphere-infra-common/src/main/java/org/apache/shardingsphere/infra/metadata/schema/model/TableMetaData.java
 +++ b/shardingsphere-infra/shardingsphere-infra-common/src/main/java/org/apache/shardingsphere/infra/metadata/schema/model/TableMetaData.java
 @@ -72,7 +72,8 @@ public final class TableMetaData {

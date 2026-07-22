@@ -1,5 +1,5 @@
---- /workspace/project_original/independent-projects/arc/runtime/src/main/java/io/quarkus/arc/ArcContainerImpl.java	2026-01-09 17:25:44.000000000 +0000
-+++ independent-projects/arc/runtime/src/main/java/io/quarkus/arc/ArcContainerImpl.java	2026-02-11 23:44:30.229342725 +0000
+--- a/independent-projects/arc/runtime/src/main/java/io/quarkus/arc/ArcContainerImpl.java	2026-01-09 17:25:44.000000000 +0000
++++ b/independent-projects/arc/runtime/src/main/java/io/quarkus/arc/ArcContainerImpl.java	2026-02-11 23:44:30.229342725 +0000
 @@ -47,7 +47,7 @@
  
      private static final Logger LOGGER = Logger.getLogger(ArcContainerImpl.class.getPackage().getName());

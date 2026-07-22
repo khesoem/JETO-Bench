@@ -1,5 +1,3 @@
-diff --git a/src/main/java/org/apache/ibatis/transaction/jdbc/JdbcTransaction.java b/src/main/java/org/apache/ibatis/transaction/jdbc/JdbcTransaction.java
-index 2bfec33..3ee3433 100644
 --- a/src/main/java/org/apache/ibatis/transaction/jdbc/JdbcTransaction.java
 +++ b/src/main/java/org/apache/ibatis/transaction/jdbc/JdbcTransaction.java
 @@ -44,11 +44,18 @@ public class JdbcTransaction implements Transaction {
@@ -21,8 +19,6 @@ index 2bfec33..3ee3433 100644
    }
  
    public JdbcTransaction(Connection connection) {
-diff --git a/src/main/java/org/apache/ibatis/transaction/jdbc/JdbcTransactionFactory.java b/src/main/java/org/apache/ibatis/transaction/jdbc/JdbcTransactionFactory.java
-index 1a56e6f..d24b580 100644
 --- a/src/main/java/org/apache/ibatis/transaction/jdbc/JdbcTransactionFactory.java
 +++ b/src/main/java/org/apache/ibatis/transaction/jdbc/JdbcTransactionFactory.java
 @@ -39,6 +39,9 @@ public class JdbcTransactionFactory implements TransactionFactory {

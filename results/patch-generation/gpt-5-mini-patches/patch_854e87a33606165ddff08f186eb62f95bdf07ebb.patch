@@ -1,5 +1,5 @@
---- /workspace/project_original/independent-projects/arc/runtime/src/main/java/io/quarkus/arc/impl/RequestContext.java	2026-01-10 08:02:33.000000000 +0000
-+++ independent-projects/arc/runtime/src/main/java/io/quarkus/arc/impl/RequestContext.java	2026-02-09 07:23:11.454584720 +0000
+--- a/independent-projects/arc/runtime/src/main/java/io/quarkus/arc/impl/RequestContext.java	2026-01-10 08:02:33.000000000 +0000
++++ b/independent-projects/arc/runtime/src/main/java/io/quarkus/arc/impl/RequestContext.java	2026-02-09 07:23:11.454584720 +0000
 @@ -7,11 +7,10 @@
  import io.quarkus.arc.impl.EventImpl.Notifier;
  import java.lang.annotation.Annotation;

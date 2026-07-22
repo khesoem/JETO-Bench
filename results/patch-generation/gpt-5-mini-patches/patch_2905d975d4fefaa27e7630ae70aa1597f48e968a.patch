@@ -1,5 +1,5 @@
---- /workspace/project_original/dubbo-common/src/main/java/org/apache/dubbo/common/utils/PojoUtils.java	2026-01-09 23:44:05.000000000 +0000
-+++ dubbo-common/src/main/java/org/apache/dubbo/common/utils/PojoUtils.java	2026-02-08 22:58:45.446991730 +0000
+--- a/dubbo-common/src/main/java/org/apache/dubbo/common/utils/PojoUtils.java	2026-01-09 23:44:05.000000000 +0000
++++ b/dubbo-common/src/main/java/org/apache/dubbo/common/utils/PojoUtils.java	2026-02-08 22:58:45.446991730 +0000
 @@ -395,7 +395,7 @@
  
          if (pojo instanceof Map<?, ?> && type != null) {

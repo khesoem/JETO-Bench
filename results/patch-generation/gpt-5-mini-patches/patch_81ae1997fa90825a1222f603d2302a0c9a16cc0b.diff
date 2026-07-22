@@ -1,5 +1,3 @@
-diff --git a/workspace/project_original/presto-spi/src/main/java/io/prestosql/spi/type/TypeSignature.java b/workspace/project/presto-spi/src/main/java/io/prestosql/spi/type/TypeSignature.java
-index 34a00c1..345d9ff 100644
 --- a/workspace/project_original/presto-spi/src/main/java/io/prestosql/spi/type/TypeSignature.java
 +++ b/workspace/project/presto-spi/src/main/java/io/prestosql/spi/type/TypeSignature.java
 @@ -36,8 +36,11 @@ public final class TypeSignature

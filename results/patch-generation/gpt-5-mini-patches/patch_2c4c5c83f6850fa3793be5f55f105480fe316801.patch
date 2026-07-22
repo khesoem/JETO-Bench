@@ -1,5 +1,5 @@
---- /workspace/project_original/core/src/main/java/org/neo4j/ogm/metadata/ClassInfo.java	2026-01-09 21:35:54.000000000 +0000
-+++ core/src/main/java/org/neo4j/ogm/metadata/ClassInfo.java	2026-02-12 01:48:19.654236803 +0000
+--- a/core/src/main/java/org/neo4j/ogm/metadata/ClassInfo.java	2026-01-09 21:35:54.000000000 +0000
++++ b/core/src/main/java/org/neo4j/ogm/metadata/ClassInfo.java	2026-02-12 01:48:19.654236803 +0000
 @@ -378,23 +378,31 @@
              .orElseThrow(() -> new MetadataException("No internal identity field found for class: " + this.className));
      }

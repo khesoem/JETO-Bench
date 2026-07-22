@@ -1,5 +1,3 @@
-diff --git a/workspace/project_original/sharding-core/sharding-core-common/src/main/java/org/apache/shardingsphere/core/metadata/ShardingMetaDataLoader.java b/workspace/project/sharding-core/sharding-core-common/src/main/java/org/apache/shardingsphere/core/metadata/ShardingMetaDataLoader.java
-index cc8372f..ae6095c 100644
 --- a/workspace/project_original/sharding-core/sharding-core-common/src/main/java/org/apache/shardingsphere/core/metadata/ShardingMetaDataLoader.java
 +++ b/workspace/project/sharding-core/sharding-core-common/src/main/java/org/apache/shardingsphere/core/metadata/ShardingMetaDataLoader.java
 @@ -75,11 +75,35 @@ public final class ShardingMetaDataLoader {

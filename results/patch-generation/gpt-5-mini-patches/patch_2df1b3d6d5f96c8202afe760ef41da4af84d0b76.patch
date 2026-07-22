@@ -1,5 +1,5 @@
---- project_original/core/src/main/java/org/neo4j/ogm/metadata/DomainInfo.java	2026-01-09 22:20:56.000000000 +0000
-+++ project/core/src/main/java/org/neo4j/ogm/metadata/DomainInfo.java	2026-02-12 05:23:06.434064790 +0000
+--- a/core/src/main/java/org/neo4j/ogm/metadata/DomainInfo.java	2026-01-09 22:20:56.000000000 +0000
++++ b/core/src/main/java/org/neo4j/ogm/metadata/DomainInfo.java	2026-02-12 05:23:06.434064790 +0000
 @@ -25,6 +25,7 @@
  import io.github.classgraph.ScanResult;
  

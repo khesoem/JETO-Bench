@@ -1,5 +1,5 @@
---- /workspace/project_original/shardingsphere-features/shardingsphere-sharding/shardingsphere-sharding-core/src/main/java/org/apache/shardingsphere/sharding/algorithm/sharding/inline/InlineShardingAlgorithm.java	2026-01-11 17:16:26.000000000 +0000
-+++ /workspace/project/shardingsphere-features/shardingsphere-sharding/shardingsphere-sharding-core/src/main/java/org/apache/shardingsphere/sharding/algorithm/sharding/inline/InlineShardingAlgorithm.java	2026-02-09 04:23:33.073031519 +0000
+--- a/shardingsphere-features/shardingsphere-sharding/shardingsphere-sharding-core/src/main/java/org/apache/shardingsphere/sharding/algorithm/sharding/inline/InlineShardingAlgorithm.java	2026-01-11 17:16:26.000000000 +0000
++++ b/shardingsphere-features/shardingsphere-sharding/shardingsphere-sharding-core/src/main/java/org/apache/shardingsphere/sharding/algorithm/sharding/inline/InlineShardingAlgorithm.java	2026-02-09 04:23:33.073031519 +0000
 @@ -45,16 +45,31 @@
      @Setter
      private Properties props = new Properties();

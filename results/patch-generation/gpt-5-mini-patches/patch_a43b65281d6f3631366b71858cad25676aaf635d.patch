@@ -1,5 +1,5 @@
---- /workspace/project_original/authz/policy/common/src/main/java/org/keycloak/authorization/policy/provider/user/UserPolicyProviderFactory.java	2026-01-09 00:49:17.000000000 +0000
-+++ authz/policy/common/src/main/java/org/keycloak/authorization/policy/provider/user/UserPolicyProviderFactory.java	2026-02-11 02:00:55.865342187 +0000
+--- a/authz/policy/common/src/main/java/org/keycloak/authorization/policy/provider/user/UserPolicyProviderFactory.java	2026-01-09 00:49:17.000000000 +0000
++++ b/authz/policy/common/src/main/java/org/keycloak/authorization/policy/provider/user/UserPolicyProviderFactory.java	2026-02-11 02:00:55.865342187 +0000
 @@ -166,13 +166,10 @@
          KeycloakSession session = authorization.getKeycloakSession();
          RealmModel realm = authorization.getRealm();

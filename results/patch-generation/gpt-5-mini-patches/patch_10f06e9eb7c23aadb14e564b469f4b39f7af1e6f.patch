@@ -1,5 +1,5 @@
---- /workspace/project_original/model/infinispan/src/main/java/org/keycloak/jgroups/protocol/KEYCLOAK_JDBC_PING2.java	2026-01-08 21:32:32.000000000 +0000
-+++ model/infinispan/src/main/java/org/keycloak/jgroups/protocol/KEYCLOAK_JDBC_PING2.java	2026-02-10 22:50:19.834239372 +0000
+--- a/model/infinispan/src/main/java/org/keycloak/jgroups/protocol/KEYCLOAK_JDBC_PING2.java	2026-01-08 21:32:32.000000000 +0000
++++ b/model/infinispan/src/main/java/org/keycloak/jgroups/protocol/KEYCLOAK_JDBC_PING2.java	2026-02-10 22:50:19.834239372 +0000
 @@ -131,6 +131,9 @@
                  PhysicalAddress physical_addr = (PhysicalAddress) down(new Event(Event.GET_PHYSICAL_ADDRESS, local_addr));
                  PingData coord_data = new PingData(local_addr, true, NameCache.get(local_addr), physical_addr).coord(is_coord);

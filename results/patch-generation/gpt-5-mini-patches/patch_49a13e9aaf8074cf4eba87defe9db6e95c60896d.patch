@@ -1,5 +1,5 @@
---- /workspace/project_original/shardingsphere-infra/shardingsphere-infra-executor/src/main/java/org/apache/shardingsphere/infra/executor/sql/prepare/driver/DriverExecutionPrepareEngine.java	2026-01-10 04:52:55.000000000 +0000
-+++ shardingsphere-infra/shardingsphere-infra-executor/src/main/java/org/apache/shardingsphere/infra/executor/sql/prepare/driver/DriverExecutionPrepareEngine.java	2026-02-09 05:02:59.461494986 +0000
+--- a/shardingsphere-infra/shardingsphere-infra-executor/src/main/java/org/apache/shardingsphere/infra/executor/sql/prepare/driver/DriverExecutionPrepareEngine.java	2026-01-10 04:52:55.000000000 +0000
++++ b/shardingsphere-infra/shardingsphere-infra-executor/src/main/java/org/apache/shardingsphere/infra/executor/sql/prepare/driver/DriverExecutionPrepareEngine.java	2026-02-09 05:02:59.461494986 +0000
 @@ -62,7 +62,14 @@
          super(maxConnectionsSizePerQuery, rules);
          this.executorDriverManager = executorDriverManager;

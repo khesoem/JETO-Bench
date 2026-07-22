@@ -1,5 +1,5 @@
---- /workspace/project_original/spring-modulith-actuator/src/main/java/org/springframework/modulith/actuator/autoconfigure/ApplicationModulesEndpointConfiguration.java	2026-01-09 11:02:44.000000000 +0000
-+++ spring-modulith-actuator/src/main/java/org/springframework/modulith/actuator/autoconfigure/ApplicationModulesEndpointConfiguration.java	2026-02-11 09:59:11.289664045 +0000
+--- a/spring-modulith-actuator/src/main/java/org/springframework/modulith/actuator/autoconfigure/ApplicationModulesEndpointConfiguration.java	2026-01-09 11:02:44.000000000 +0000
++++ b/spring-modulith-actuator/src/main/java/org/springframework/modulith/actuator/autoconfigure/ApplicationModulesEndpointConfiguration.java	2026-02-11 09:59:11.289664045 +0000
 @@ -16,6 +16,7 @@
  package org.springframework.modulith.actuator.autoconfigure;
  

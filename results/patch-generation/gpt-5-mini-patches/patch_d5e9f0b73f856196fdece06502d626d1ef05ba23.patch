@@ -1,5 +1,5 @@
---- /workspace/project_original/src/main/java/kafdrop/service/KafkaMonitor.java	2026-01-10 01:41:20.000000000 +0000
-+++ /workspace/project/src/main/java/kafdrop/service/KafkaMonitor.java	2026-02-09 00:46:59.744395357 +0000
+--- a/src/main/java/kafdrop/service/KafkaMonitor.java	2026-01-10 01:41:20.000000000 +0000
++++ b/src/main/java/kafdrop/service/KafkaMonitor.java	2026-02-09 00:46:59.744395357 +0000
 @@ -47,6 +47,15 @@
    List<ConsumerVO> getConsumers(Collection<TopicVO> topicVos);
  
@@ -16,8 +16,8 @@
     * Create topic
     * @param createTopicDto topic params
     */
---- /workspace/project_original/src/main/java/kafdrop/service/KafkaMonitorImpl.java	2026-01-10 01:41:20.000000000 +0000
-+++ /workspace/project/src/main/java/kafdrop/service/KafkaMonitorImpl.java	2026-02-09 00:47:26.744434055 +0000
+--- a/src/main/java/kafdrop/service/KafkaMonitorImpl.java	2026-01-10 01:41:20.000000000 +0000
++++ b/src/main/java/kafdrop/service/KafkaMonitorImpl.java	2026-02-09 00:47:26.744434055 +0000
 @@ -205,6 +205,17 @@
    }
  
@@ -36,8 +36,8 @@
    public void createTopic(CreateTopicVO createTopicDto) {
      var newTopic = new NewTopic(
              createTopicDto.getName(), createTopicDto.getPartitionsNumber(), (short) createTopicDto.getReplicationFactor()
---- /workspace/project_original/src/main/java/kafdrop/controller/ConsumerController.java	2026-01-10 01:41:20.000000000 +0000
-+++ /workspace/project/src/main/java/kafdrop/controller/ConsumerController.java	2026-02-09 00:47:32.046441653 +0000
+--- a/src/main/java/kafdrop/controller/ConsumerController.java	2026-01-10 01:41:20.000000000 +0000
++++ b/src/main/java/kafdrop/controller/ConsumerController.java	2026-02-09 00:47:32.046441653 +0000
 @@ -38,11 +38,9 @@
    @RequestMapping("/{groupId:.+}")
    public String consumerDetail(@PathVariable("groupId") String groupId, Model model) throws ConsumerNotFoundException {

@@ -1,5 +1,5 @@
---- /workspace/project_original/model/infinispan/src/main/java/org/keycloak/models/sessions/infinispan/remote/RemoteInfinispanKeycloakTransaction.java	2026-01-09 01:59:23.000000000 +0000
-+++ model/infinispan/src/main/java/org/keycloak/models/sessions/infinispan/remote/RemoteInfinispanKeycloakTransaction.java	2026-02-11 03:54:09.538813934 +0000
+--- a/model/infinispan/src/main/java/org/keycloak/models/sessions/infinispan/remote/RemoteInfinispanKeycloakTransaction.java	2026-01-09 01:59:23.000000000 +0000
++++ b/model/infinispan/src/main/java/org/keycloak/models/sessions/infinispan/remote/RemoteInfinispanKeycloakTransaction.java	2026-02-11 03:54:09.538813934 +0000
 @@ -43,6 +43,20 @@
      private final RemoteCache<K, V> cache;
      private Predicate<V> removePredicate;

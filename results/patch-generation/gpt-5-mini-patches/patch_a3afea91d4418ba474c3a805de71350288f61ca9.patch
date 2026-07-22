@@ -1,5 +1,5 @@
---- /workspace/project_original/rest/kadai-rest-spring/src/main/java/io/kadai/classification/rest/ClassificationDefinitionController.java	2026-01-09 07:32:19.000000000 +0000
-+++ /workspace/project/rest/kadai-rest-spring/src/main/java/io/kadai/classification/rest/ClassificationDefinitionController.java	2026-02-11 07:03:43.808432143 +0000
+--- a/rest/kadai-rest-spring/src/main/java/io/kadai/classification/rest/ClassificationDefinitionController.java	2026-01-09 07:32:19.000000000 +0000
++++ b/rest/kadai-rest-spring/src/main/java/io/kadai/classification/rest/ClassificationDefinitionController.java	2026-02-11 07:03:43.808432143 +0000
 @@ -151,35 +151,39 @@
    private Map<Classification, String> mapChildrenToParentKeys(
        Collection<ClassificationDefinitionRepresentationModel> definitionList,

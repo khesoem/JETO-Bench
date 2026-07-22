@@ -1,5 +1,5 @@
---- /workspace/project_original/server-spi-private/src/main/java/org/keycloak/models/utils/RepresentationToModel.java	2026-01-09 00:02:07.000000000 +0000
-+++ server-spi-private/src/main/java/org/keycloak/models/utils/RepresentationToModel.java	2026-02-11 01:12:47.254442548 +0000
+--- a/server-spi-private/src/main/java/org/keycloak/models/utils/RepresentationToModel.java	2026-01-09 00:02:07.000000000 +0000
++++ b/server-spi-private/src/main/java/org/keycloak/models/utils/RepresentationToModel.java	2026-02-11 01:12:47.254442548 +0000
 @@ -377,11 +377,31 @@
          }
  

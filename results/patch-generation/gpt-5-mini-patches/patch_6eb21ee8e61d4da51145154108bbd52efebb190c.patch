@@ -1,5 +1,5 @@
---- /workspace/project_original/dubbo-remoting/dubbo-remoting-api/src/main/java/org/apache/dubbo/remoting/exchange/support/header/HeaderExchangeChannel.java	2026-01-10 02:38:29.000000000 +0000
-+++ dubbo-remoting/dubbo-remoting-api/src/main/java/org/apache/dubbo/remoting/exchange/support/header/HeaderExchangeChannel.java	2026-02-09 02:11:25.917538411 +0000
+--- a/dubbo-remoting/dubbo-remoting-api/src/main/java/org/apache/dubbo/remoting/exchange/support/header/HeaderExchangeChannel.java	2026-01-10 02:38:29.000000000 +0000
++++ b/dubbo-remoting/dubbo-remoting-api/src/main/java/org/apache/dubbo/remoting/exchange/support/header/HeaderExchangeChannel.java	2026-02-09 02:11:25.917538411 +0000
 @@ -1,251 +1,256 @@
 -/*
 - * Licensed to the Apache Software Foundation (ASF) under one or more
