@@ -1,5 +1,5 @@
---- connect-file-pulse-filesystems/filepulse-amazons3-fs/src/main/java/io/streamthoughts/kafka/connect/filepulse/fs/AmazonS3FileSystemListing.java	2026-01-09 12:23:34.000000000 +0000
-+++ connect-file-pulse-filesystems/filepulse-amazons3-fs/src/main/java/io/streamthoughts/kafka/connect/filepulse/fs/AmazonS3FileSystemListing.java	2026-07-14 16:34:15.623584284 +0000
+--- a/connect-file-pulse-filesystems/filepulse-amazons3-fs/src/main/java/io/streamthoughts/kafka/connect/filepulse/fs/AmazonS3FileSystemListing.java	2026-01-09 12:23:34.000000000 +0000
++++ b/connect-file-pulse-filesystems/filepulse-amazons3-fs/src/main/java/io/streamthoughts/kafka/connect/filepulse/fs/AmazonS3FileSystemListing.java	2026-07-14 16:34:15.623584284 +0000
 @@ -95,12 +95,7 @@
  
                  objectMetaList.addAll(objectListing.getObjectSummaries()
@@ -14,8 +14,8 @@
                          .filter(Objects::nonNull)
                          .collect(Collectors.toList()));
  
---- connect-file-pulse-filesystems/filepulse-amazons3-fs/src/main/java/io/streamthoughts/kafka/connect/filepulse/fs/AmazonS3Storage.java	2026-01-09 12:23:34.000000000 +0000
-+++ connect-file-pulse-filesystems/filepulse-amazons3-fs/src/main/java/io/streamthoughts/kafka/connect/filepulse/fs/AmazonS3Storage.java	2026-07-14 16:35:18.810987746 +0000
+--- a/connect-file-pulse-filesystems/filepulse-amazons3-fs/src/main/java/io/streamthoughts/kafka/connect/filepulse/fs/AmazonS3Storage.java	2026-01-09 12:23:34.000000000 +0000
++++ b/connect-file-pulse-filesystems/filepulse-amazons3-fs/src/main/java/io/streamthoughts/kafka/connect/filepulse/fs/AmazonS3Storage.java	2026-07-14 16:35:18.810987746 +0000
 @@ -27,6 +27,7 @@
  import com.amazonaws.services.s3.model.GetObjectMetadataRequest;
  import com.amazonaws.services.s3.model.GetObjectRequest;

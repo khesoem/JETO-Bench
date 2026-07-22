@@ -1,5 +1,5 @@
---- shardingsphere-features/shardingsphere-sharding/shardingsphere-sharding-core/src/main/java/org/apache/shardingsphere/sharding/algorithm/sharding/inline/InlineShardingAlgorithm.java	2026-01-11 17:16:26.000000000 +0000
-+++ shardingsphere-features/shardingsphere-sharding/shardingsphere-sharding-core/src/main/java/org/apache/shardingsphere/sharding/algorithm/sharding/inline/InlineShardingAlgorithm.java	2026-07-15 19:55:20.921771440 +0000
+--- a/shardingsphere-features/shardingsphere-sharding/shardingsphere-sharding-core/src/main/java/org/apache/shardingsphere/sharding/algorithm/sharding/inline/InlineShardingAlgorithm.java	2026-01-11 17:16:26.000000000 +0000
++++ b/shardingsphere-features/shardingsphere-sharding/shardingsphere-sharding-core/src/main/java/org/apache/shardingsphere/sharding/algorithm/sharding/inline/InlineShardingAlgorithm.java	2026-07-15 19:55:20.921771440 +0000
 @@ -41,19 +41,23 @@
      
      private boolean allowRangeQuery;

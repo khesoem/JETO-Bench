@@ -1,5 +1,5 @@
---- server-spi-private/src/main/java/org/keycloak/authorization/policy/evaluation/DefaultEvaluation.java	2026-01-09 01:52:58.000000000 +0000
-+++ server-spi-private/src/main/java/org/keycloak/authorization/policy/evaluation/DefaultEvaluation.java	2026-07-13 23:45:15.316043062 +0000
+--- a/server-spi-private/src/main/java/org/keycloak/authorization/policy/evaluation/DefaultEvaluation.java	2026-01-09 01:52:58.000000000 +0000
++++ b/server-spi-private/src/main/java/org/keycloak/authorization/policy/evaluation/DefaultEvaluation.java	2026-07-13 23:45:15.316043062 +0000
 @@ -145,6 +145,8 @@
      private Realm createRealm() {
          return new Realm() {

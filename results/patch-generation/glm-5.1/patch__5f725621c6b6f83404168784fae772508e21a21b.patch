@@ -1,5 +1,5 @@
---- /workspace/project_original/spring-modulith-observability/src/main/java/org/springframework/modulith/observability/support/ModuleEventListener.java	2026-01-09 11:02:53.000000000 +0000
-+++ /workspace/project/spring-modulith-observability/src/main/java/org/springframework/modulith/observability/support/ModuleEventListener.java	2026-07-14 13:34:06.192323548 +0000
+--- a/spring-modulith-observability/src/main/java/org/springframework/modulith/observability/support/ModuleEventListener.java	2026-01-09 11:02:53.000000000 +0000
++++ b/spring-modulith-observability/src/main/java/org/springframework/modulith/observability/support/ModuleEventListener.java	2026-07-14 13:34:06.192323548 +0000
 @@ -82,7 +82,7 @@
  		}
  

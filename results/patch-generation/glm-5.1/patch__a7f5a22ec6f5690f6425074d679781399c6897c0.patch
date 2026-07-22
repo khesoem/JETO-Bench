@@ -1,5 +1,5 @@
---- /workspace/project_original/spring-cloud-function-adapters/spring-cloud-function-serverless-web/src/main/java/org/springframework/cloud/function/serverless/web/ProxyMvc.java	2026-01-09 21:11:14.000000000 +0000
-+++ spring-cloud-function-adapters/spring-cloud-function-serverless-web/src/main/java/org/springframework/cloud/function/serverless/web/ProxyMvc.java	2026-07-15 00:08:47.100306456 +0000
+--- a/spring-cloud-function-adapters/spring-cloud-function-serverless-web/src/main/java/org/springframework/cloud/function/serverless/web/ProxyMvc.java	2026-01-09 21:11:14.000000000 +0000
++++ b/spring-cloud-function-adapters/spring-cloud-function-serverless-web/src/main/java/org/springframework/cloud/function/serverless/web/ProxyMvc.java	2026-07-15 00:08:47.100306456 +0000
 @@ -24,6 +24,7 @@
  import java.util.Iterator;
  import java.util.List;

@@ -1,5 +1,5 @@
---- /workspace/project_original/model/infinispan/src/main/java/org/keycloak/models/sessions/infinispan/remote/RemoteInfinispanKeycloakTransaction.java	2026-01-09 01:59:23.000000000 +0000
-+++ /workspace/project/model/infinispan/src/main/java/org/keycloak/models/sessions/infinispan/remote/RemoteInfinispanKeycloakTransaction.java	2026-07-14 00:46:43.720251285 +0000
+--- a/model/infinispan/src/main/java/org/keycloak/models/sessions/infinispan/remote/RemoteInfinispanKeycloakTransaction.java	2026-01-09 01:59:23.000000000 +0000
++++ b/model/infinispan/src/main/java/org/keycloak/models/sessions/infinispan/remote/RemoteInfinispanKeycloakTransaction.java	2026-07-14 00:46:43.720251285 +0000
 @@ -39,6 +39,24 @@
  
      private final static Logger logger = Logger.getLogger(MethodHandles.lookup().lookupClass());
@@ -80,8 +80,8 @@
          // Commit if any:
          // 1. it is a removal operation (no value to test the predicate).
          // 2. remove predicate is not present.
---- /workspace/project_original/model/infinispan/src/main/java/org/keycloak/models/sessions/infinispan/InfinispanKeycloakTransaction.java	2026-01-09 01:59:23.000000000 +0000
-+++ /workspace/project/model/infinispan/src/main/java/org/keycloak/models/sessions/infinispan/InfinispanKeycloakTransaction.java	2026-07-14 00:46:59.851860629 +0000
+--- a/model/infinispan/src/main/java/org/keycloak/models/sessions/infinispan/InfinispanKeycloakTransaction.java	2026-01-09 01:59:23.000000000 +0000
++++ b/model/infinispan/src/main/java/org/keycloak/models/sessions/infinispan/InfinispanKeycloakTransaction.java	2026-07-14 00:46:59.851860629 +0000
 @@ -179,6 +179,9 @@
          Object taskKey = getTaskKey(cache, key);
          CacheTask current = tasks.get(taskKey);

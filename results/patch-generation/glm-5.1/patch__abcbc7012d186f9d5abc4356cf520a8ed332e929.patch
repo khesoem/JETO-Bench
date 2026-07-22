@@ -1,5 +1,5 @@
---- /workspace/project_original/quarkus/config-api/src/main/java/org/keycloak/config/StorageOptions.java	2026-01-10 00:33:17.000000000 +0000
-+++ /workspace/project/quarkus/config-api/src/main/java/org/keycloak/config/StorageOptions.java	2026-07-15 11:21:18.750086653 +0000
+--- a/quarkus/config-api/src/main/java/org/keycloak/config/StorageOptions.java	2026-01-10 00:33:17.000000000 +0000
++++ b/quarkus/config-api/src/main/java/org/keycloak/config/StorageOptions.java	2026-07-15 11:21:18.750086653 +0000
 @@ -316,11 +316,11 @@
              .hidden()
              .build();
@@ -14,8 +14,8 @@
              .hidden()
              .build();
  
---- /workspace/project_original/model/map-hot-rod/src/main/java/org/keycloak/models/map/storage/hotRod/connections/DefaultHotRodConnectionProviderFactory.java	2026-01-10 00:33:17.000000000 +0000
-+++ /workspace/project/model/map-hot-rod/src/main/java/org/keycloak/models/map/storage/hotRod/connections/DefaultHotRodConnectionProviderFactory.java	2026-07-15 11:21:33.307636183 +0000
+--- a/model/map-hot-rod/src/main/java/org/keycloak/models/map/storage/hotRod/connections/DefaultHotRodConnectionProviderFactory.java	2026-01-10 00:33:17.000000000 +0000
++++ b/model/map-hot-rod/src/main/java/org/keycloak/models/map/storage/hotRod/connections/DefaultHotRodConnectionProviderFactory.java	2026-07-15 11:21:33.307636183 +0000
 @@ -119,21 +119,21 @@
          registerSchemata();
  
@@ -48,8 +48,8 @@
          }
  
          LOG.infof("HotRod client configuration was successful.");
---- /workspace/project_original/quarkus/runtime/src/main/java/org/keycloak/quarkus/runtime/configuration/mappers/StoragePropertyMappers.java	2026-01-10 00:33:14.000000000 +0000
-+++ /workspace/project/quarkus/runtime/src/main/java/org/keycloak/quarkus/runtime/configuration/mappers/StoragePropertyMappers.java	2026-07-15 11:21:50.891299945 +0000
+--- a/quarkus/runtime/src/main/java/org/keycloak/quarkus/runtime/configuration/mappers/StoragePropertyMappers.java	2026-01-10 00:33:14.000000000 +0000
++++ b/quarkus/runtime/src/main/java/org/keycloak/quarkus/runtime/configuration/mappers/StoragePropertyMappers.java	2026-07-15 11:21:50.891299945 +0000
 @@ -293,8 +293,8 @@
                          .to("kc.spi-connections-hot-rod-default-configure-remote-caches")
                          .paramLabel(Boolean.TRUE + "|" + Boolean.FALSE)

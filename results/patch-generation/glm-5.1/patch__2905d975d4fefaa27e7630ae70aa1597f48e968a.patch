@@ -1,5 +1,5 @@
---- /workspace/project_original/dubbo-common/src/main/java/org/apache/dubbo/common/constants/CommonConstants.java	2026-01-09 23:44:04.000000000 +0000
-+++ /workspace/project/dubbo-common/src/main/java/org/apache/dubbo/common/constants/CommonConstants.java	2026-07-15 09:12:46.237982821 +0000
+--- a/dubbo-common/src/main/java/org/apache/dubbo/common/constants/CommonConstants.java	2026-01-09 23:44:04.000000000 +0000
++++ b/dubbo-common/src/main/java/org/apache/dubbo/common/constants/CommonConstants.java	2026-07-15 09:12:46.237982821 +0000
 @@ -353,6 +353,14 @@
      String GENERIC_WITH_CLZ_KEY = "generic.include.class";
  
@@ -15,8 +15,8 @@
       * Whether to cache locally, default is true
       */
      String REGISTRY_LOCAL_FILE_CACHE_ENABLED = "file.cache";
---- /workspace/project_original/dubbo-common/src/main/java/org/apache/dubbo/common/utils/PojoUtils.java	2026-01-09 23:44:05.000000000 +0000
-+++ /workspace/project/dubbo-common/src/main/java/org/apache/dubbo/common/utils/PojoUtils.java	2026-07-15 09:13:20.567278251 +0000
+--- a/dubbo-common/src/main/java/org/apache/dubbo/common/utils/PojoUtils.java	2026-01-09 23:44:05.000000000 +0000
++++ b/dubbo-common/src/main/java/org/apache/dubbo/common/utils/PojoUtils.java	2026-07-15 09:13:20.567278251 +0000
 @@ -75,6 +75,7 @@
      private static final ConcurrentMap<String, Method> NAME_METHODS_CACHE = new ConcurrentHashMap<String, Method>();
      private static final ConcurrentMap<Class<?>, ConcurrentMap<String, Field>> CLASS_FIELD_CACHE = new ConcurrentHashMap<Class<?>, ConcurrentMap<String, Field>>();

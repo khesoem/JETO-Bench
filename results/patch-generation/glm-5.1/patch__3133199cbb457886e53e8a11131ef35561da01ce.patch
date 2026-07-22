@@ -1,5 +1,5 @@
---- /workspace/project_original/independent-projects/arc/processor/src/main/java/io/quarkus/arc/processor/ComponentsProviderGenerator.java	2026-01-09 16:10:42.000000000 +0000
-+++ /workspace/project/independent-projects/arc/processor/src/main/java/io/quarkus/arc/processor/ComponentsProviderGenerator.java	2026-07-14 22:46:14.699852215 +0000
+--- a/independent-projects/arc/processor/src/main/java/io/quarkus/arc/processor/ComponentsProviderGenerator.java	2026-01-09 16:10:42.000000000 +0000
++++ b/independent-projects/arc/processor/src/main/java/io/quarkus/arc/processor/ComponentsProviderGenerator.java	2026-07-14 22:46:14.699852215 +0000
 @@ -169,6 +169,15 @@
          BeanAdder beanAdder = new BeanAdder(componentsProvider, getComponents, processed, beanIdToBeanHandle,
                  beanToGeneratedName);

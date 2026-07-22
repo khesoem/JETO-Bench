@@ -1,5 +1,5 @@
---- /workspace/project_original/sharding-core/sharding-core-common/src/main/java/org/apache/shardingsphere/core/metadata/ShardingMetaDataLoader.java	2026-01-10 06:42:03.000000000 +0000
-+++ /workspace/project/sharding-core/sharding-core-common/src/main/java/org/apache/shardingsphere/core/metadata/ShardingMetaDataLoader.java	2026-07-16 10:32:23.160559201 +0000
+--- a/sharding-core/sharding-core-common/src/main/java/org/apache/shardingsphere/core/metadata/ShardingMetaDataLoader.java	2026-01-10 06:42:03.000000000 +0000
++++ b/sharding-core/sharding-core-common/src/main/java/org/apache/shardingsphere/core/metadata/ShardingMetaDataLoader.java	2026-07-16 10:32:23.160559201 +0000
 @@ -39,6 +39,11 @@
  import java.util.Collections;
  import java.util.Map.Entry;

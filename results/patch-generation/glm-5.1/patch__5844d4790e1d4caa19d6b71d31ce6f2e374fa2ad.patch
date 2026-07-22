@@ -1,5 +1,5 @@
---- /workspace/project_original/pulsar-client-api/src/main/java/org/apache/pulsar/client/api/PulsarClientException.java	2026-01-10 08:43:57.000000000 +0000
-+++ /workspace/project/pulsar-client-api/src/main/java/org/apache/pulsar/client/api/PulsarClientException.java	2026-07-16 12:09:57.639285760 +0000
+--- a/pulsar-client-api/src/main/java/org/apache/pulsar/client/api/PulsarClientException.java	2026-01-10 08:43:57.000000000 +0000
++++ b/pulsar-client-api/src/main/java/org/apache/pulsar/client/api/PulsarClientException.java	2026-07-16 12:09:57.639285760 +0000
 @@ -116,14 +116,25 @@
              int i = 0;
              boolean first = true;

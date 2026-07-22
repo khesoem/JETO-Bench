@@ -1,5 +1,5 @@
---- /workspace/project_original/model/jpa/src/main/java/org/keycloak/models/jpa/RealmAdapter.java	2026-01-08 21:32:32.000000000 +0000
-+++ /workspace/project/model/jpa/src/main/java/org/keycloak/models/jpa/RealmAdapter.java	2026-07-13 16:53:08.748979428 +0000
+--- a/model/jpa/src/main/java/org/keycloak/models/jpa/RealmAdapter.java	2026-01-08 21:32:32.000000000 +0000
++++ b/model/jpa/src/main/java/org/keycloak/models/jpa/RealmAdapter.java	2026-07-13 16:53:08.748979428 +0000
 @@ -97,7 +97,6 @@
      @Override
      public void setName(String name) {

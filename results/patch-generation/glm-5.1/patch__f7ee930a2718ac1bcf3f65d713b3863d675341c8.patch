@@ -1,5 +1,5 @@
---- model/infinispan/src/main/java/org/keycloak/cluster/infinispan/remote/RemoteInfinispanNotificationManager.java	2026-01-09 13:41:17.000000000 +0000
-+++ model/infinispan/src/main/java/org/keycloak/cluster/infinispan/remote/RemoteInfinispanNotificationManager.java	2026-07-14 20:04:26.513274200 +0000
+--- a/model/infinispan/src/main/java/org/keycloak/cluster/infinispan/remote/RemoteInfinispanNotificationManager.java	2026-01-09 13:41:17.000000000 +0000
++++ b/model/infinispan/src/main/java/org/keycloak/cluster/infinispan/remote/RemoteInfinispanNotificationManager.java	2026-07-14 20:04:26.513274200 +0000
 @@ -17,7 +17,9 @@
  
  package org.keycloak.cluster.infinispan.remote;
