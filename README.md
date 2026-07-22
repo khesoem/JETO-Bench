@@ -8,6 +8,22 @@ It includes:
 - evaluation harnesses for patch and test evaluation,
 - scripts and data to reproduce reported tables and charts.
 
+## Citation
+
+If you use JETO-Mine or JETO-Bench in your research, please cite our paper:
+
+```bibtex
+@misc{etemadi2026jeto,
+      title={JETO-Bench: A Reproducible Benchmark for Execution Time Improvement Patches in Java}, 
+      author={Khashayar Etemadi and Zhendong Su},
+      year={2026},
+      eprint={2606.31767},
+      archivePrefix={arXiv},
+      primaryClass={cs.SE},
+      url={https://arxiv.org/abs/2606.31767}, 
+}
+```
+
 ## Requirements
 
 - Linux environment
@@ -144,19 +160,3 @@ Useful scripts include:
 - `results/charts/repos.py`
 - `results/charts/executable_etips_stats.py`
 - `results/tables/modified.py`
-
-## Citation
-
-If you use JETO-Mine or JETO-Bench in your research, please cite our paper:
-
-```bibtex
-@misc{etemadi2026jeto,
-      title={JETO-Bench: A Reproducible Benchmark for Execution Time Improvement Patches in Java}, 
-      author={Khashayar Etemadi and Zhendong Su},
-      year={2026},
-      eprint={2606.31767},
-      archivePrefix={arXiv},
-      primaryClass={cs.SE},
-      url={https://arxiv.org/abs/2606.31767}, 
-}
-```
