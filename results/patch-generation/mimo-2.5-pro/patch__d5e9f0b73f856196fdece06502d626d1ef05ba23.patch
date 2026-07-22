@@ -1,5 +1,5 @@
---- project_original/src/main/java/kafdrop/service/KafkaHighLevelConsumer.java	2026-01-10 01:41:20.000000000 +0000
-+++ project/src/main/java/kafdrop/service/KafkaHighLevelConsumer.java	2026-07-12 08:06:09.587428552 +0000
+--- a/src/main/java/kafdrop/service/KafkaHighLevelConsumer.java	2026-01-10 01:41:20.000000000 +0000
++++ b/src/main/java/kafdrop/service/KafkaHighLevelConsumer.java	2026-07-12 08:06:09.587428552 +0000
 @@ -14,17 +14,27 @@
  import java.nio.*;
  import java.time.*;
@@ -94,8 +94,8 @@
  
      return topicVos;
    }
---- project_original/src/main/java/kafdrop/service/KafkaMonitorImpl.java	2026-01-10 01:41:20.000000000 +0000
-+++ project/src/main/java/kafdrop/service/KafkaMonitorImpl.java	2026-07-12 08:03:05.264496063 +0000
+--- a/src/main/java/kafdrop/service/KafkaMonitorImpl.java	2026-01-10 01:41:20.000000000 +0000
++++ b/src/main/java/kafdrop/service/KafkaMonitorImpl.java	2026-07-12 08:03:05.264496063 +0000
 @@ -30,6 +30,7 @@
  
  import java.util.*;

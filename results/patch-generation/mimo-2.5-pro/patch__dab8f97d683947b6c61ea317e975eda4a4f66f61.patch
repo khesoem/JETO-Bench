@@ -1,5 +1,5 @@
---- project_original/model/map/src/main/java/org/keycloak/models/map/storage/MapKeycloakTransaction.java	2026-01-10 00:19:51.000000000 +0000
-+++ project/model/map/src/main/java/org/keycloak/models/map/storage/MapKeycloakTransaction.java	2026-07-12 04:49:26.157067993 +0000
+--- a/model/map/src/main/java/org/keycloak/models/map/storage/MapKeycloakTransaction.java	2026-01-10 00:19:51.000000000 +0000
++++ b/model/map/src/main/java/org/keycloak/models/map/storage/MapKeycloakTransaction.java	2026-07-12 04:49:26.157067993 +0000
 @@ -78,6 +78,26 @@
      long getCount(QueryParameters<M> queryParameters);
  
@@ -27,8 +27,8 @@
       * Instructs this transaction to delete a value associated with the identifier {@code key} from the underlying store
       * on commit.
       *
---- project_original/model/map/src/main/java/org/keycloak/models/map/group/MapGroupProvider.java	2026-01-10 00:19:51.000000000 +0000
-+++ project/model/map/src/main/java/org/keycloak/models/map/group/MapGroupProvider.java	2026-07-12 04:54:39.326005099 +0000
+--- a/model/map/src/main/java/org/keycloak/models/map/group/MapGroupProvider.java	2026-01-10 00:19:51.000000000 +0000
++++ b/model/map/src/main/java/org/keycloak/models/map/group/MapGroupProvider.java	2026-07-12 04:54:39.326005099 +0000
 @@ -218,7 +218,7 @@
                  mcb.compare(SearchableFields.PARENT_ID, Operator.NOT_EXISTS) : 
                  mcb.compare(SearchableFields.PARENT_ID, Operator.EQ, toParent.getId());
@@ -47,8 +47,8 @@
              throw new ModelDuplicateException("Group exists: " + id);
          }
          entity = tx.create(entity);
---- project_original/model/map/src/main/java/org/keycloak/models/map/clientscope/MapClientScopeProvider.java	2026-01-10 00:19:51.000000000 +0000
-+++ project/model/map/src/main/java/org/keycloak/models/map/clientscope/MapClientScopeProvider.java	2026-07-12 04:52:46.941723361 +0000
+--- a/model/map/src/main/java/org/keycloak/models/map/clientscope/MapClientScopeProvider.java	2026-01-10 00:19:51.000000000 +0000
++++ b/model/map/src/main/java/org/keycloak/models/map/clientscope/MapClientScopeProvider.java	2026-07-12 04:52:46.941723361 +0000
 @@ -84,11 +84,11 @@
          mcb = mcb.compare(SearchableFields.REALM_ID, Operator.EQ, realm.getId())
              .compare(SearchableFields.NAME, Operator.EQ, name);
@@ -63,8 +63,8 @@
              throw new ModelDuplicateException("Client scope exists: " + id);
          }
  
---- project_original/model/map/src/main/java/org/keycloak/models/map/user/MapUserProvider.java	2026-01-10 00:19:51.000000000 +0000
-+++ project/model/map/src/main/java/org/keycloak/models/map/user/MapUserProvider.java	2026-07-12 04:49:59.677346028 +0000
+--- a/model/map/src/main/java/org/keycloak/models/map/user/MapUserProvider.java	2026-01-10 00:19:51.000000000 +0000
++++ b/model/map/src/main/java/org/keycloak/models/map/user/MapUserProvider.java	2026-07-12 04:49:59.677346028 +0000
 @@ -336,11 +336,11 @@
                           SearchableFields.USERNAME : 
                           SearchableFields.USERNAME_CASE_INSENSITIVE, Operator.EQ, username);
@@ -79,8 +79,8 @@
              throw new ModelDuplicateException("User exists: " + id);
          }
  
---- project_original/model/map/src/main/java/org/keycloak/models/map/client/MapClientProvider.java	2026-01-10 00:19:51.000000000 +0000
-+++ project/model/map/src/main/java/org/keycloak/models/map/client/MapClientProvider.java	2026-07-12 04:50:32.563599890 +0000
+--- a/model/map/src/main/java/org/keycloak/models/map/client/MapClientProvider.java	2026-01-10 00:19:51.000000000 +0000
++++ b/model/map/src/main/java/org/keycloak/models/map/client/MapClientProvider.java	2026-07-12 04:50:32.563599890 +0000
 @@ -148,7 +148,7 @@
      public ClientModel addClient(RealmModel realm, String id, String clientId) {
          LOG.tracef("addClient(%s, %s, %s)%s", realm, id, clientId, getShortStackTrace());
@@ -90,8 +90,8 @@
              throw new ModelDuplicateException("Client with same id exists: " + id);
          }
          if (clientId != null && getClientByClientId(realm, clientId) != null) {
---- project_original/model/map/src/main/java/org/keycloak/models/map/realm/MapRealmProvider.java	2026-01-10 00:19:51.000000000 +0000
-+++ project/model/map/src/main/java/org/keycloak/models/map/realm/MapRealmProvider.java	2026-07-12 04:50:43.937033528 +0000
+--- a/model/map/src/main/java/org/keycloak/models/map/realm/MapRealmProvider.java	2026-01-10 00:19:51.000000000 +0000
++++ a/model/map/src/main/java/org/keycloak/models/map/realm/MapRealmProvider.java	2026-07-12 04:50:43.937033528 +0000
 @@ -72,7 +72,7 @@
              throw new ModelDuplicateException("Realm with given name exists: " + name);
          }
@@ -101,8 +101,8 @@
              throw new ModelDuplicateException("Realm exists: " + id);
          }
  
---- project_original/model/map/src/main/java/org/keycloak/models/map/authSession/MapRootAuthenticationSessionProvider.java	2026-01-10 00:19:51.000000000 +0000
-+++ project/model/map/src/main/java/org/keycloak/models/map/authSession/MapRootAuthenticationSessionProvider.java	2026-07-12 04:50:51.497321782 +0000
+--- a/model/map/src/main/java/org/keycloak/models/map/authSession/MapRootAuthenticationSessionProvider.java	2026-01-10 00:19:51.000000000 +0000
++++ b/model/map/src/main/java/org/keycloak/models/map/authSession/MapRootAuthenticationSessionProvider.java	2026-07-12 04:50:51.497321782 +0000
 @@ -105,7 +105,7 @@
          int authSessionLifespanSeconds = getAuthSessionLifespan(realm);
          entity.setExpiration(timestamp + TimeAdapter.fromSecondsToMilliseconds(authSessionLifespanSeconds));
@@ -112,8 +112,8 @@
              throw new ModelDuplicateException("Root authentication session exists: " + entity.getId());
          }
  
---- project_original/model/map/src/main/java/org/keycloak/models/map/role/MapRoleProvider.java	2026-01-10 00:19:51.000000000 +0000
-+++ project/model/map/src/main/java/org/keycloak/models/map/role/MapRoleProvider.java	2026-07-12 04:51:21.070449327 +0000
+--- a/model/map/src/main/java/org/keycloak/models/map/role/MapRoleProvider.java	2026-01-10 00:19:51.000000000 +0000
++++ b/model/map/src/main/java/org/keycloak/models/map/role/MapRoleProvider.java	2026-07-12 04:51:21.070449327 +0000
 @@ -71,7 +71,7 @@
          entity.setRealmId(realm.getId());
          entity.setName(name);
@@ -132,8 +132,8 @@
              throw new ModelDuplicateException("Role exists: " + id);
          }
          entity = tx.create(entity);
---- project_original/model/map/src/main/java/org/keycloak/models/map/authorization/MapPolicyStore.java	2026-01-10 00:19:51.000000000 +0000
-+++ project/model/map/src/main/java/org/keycloak/models/map/authorization/MapPolicyStore.java	2026-07-12 04:51:36.305030179 +0000
+--- a/model/map/src/main/java/org/keycloak/models/map/authorization/MapPolicyStore.java	2026-01-10 00:19:51.000000000 +0000
++++ b/model/map/src/main/java/org/keycloak/models/map/authorization/MapPolicyStore.java	2026-07-12 04:51:36.305030179 +0000
 @@ -84,7 +84,7 @@
          DefaultModelCriteria<Policy> mcb = forRealmAndResourceServer(realm, resourceServer)
                  .compare(SearchableFields.NAME, Operator.EQ, representation.getName());
@@ -143,8 +143,8 @@
              throw new ModelDuplicateException("Policy with name '" + representation.getName() + "' for " + resourceServer.getId() + " already exists");
          }
  
---- project_original/model/map/src/main/java/org/keycloak/models/map/authorization/MapScopeStore.java	2026-01-10 00:19:51.000000000 +0000
-+++ project/model/map/src/main/java/org/keycloak/models/map/authorization/MapScopeStore.java	2026-07-12 04:51:44.781353359 +0000
+--- a/model/map/src/main/java/org/keycloak/models/map/authorization/MapScopeStore.java	2026-01-10 00:19:51.000000000 +0000
++++ b/model/map/src/main/java/org/keycloak/models/map/authorization/MapScopeStore.java	2026-07-12 04:51:44.781353359 +0000
 @@ -81,7 +81,7 @@
          DefaultModelCriteria<Scope> mcb = forRealmAndResourceServer(realm, resourceServer)
                  .compare(SearchableFields.NAME, Operator.EQ, name);
@@ -154,8 +154,8 @@
              throw new ModelDuplicateException("Scope with name '" + name + "' for " + resourceServer.getId() + " already exists");
          }
  
---- project_original/model/map/src/main/java/org/keycloak/models/map/authorization/MapResourceStore.java	2026-01-10 00:19:51.000000000 +0000
-+++ project/model/map/src/main/java/org/keycloak/models/map/authorization/MapResourceStore.java	2026-07-12 04:53:45.331948262 +0000
+--- a/model/map/src/main/java/org/keycloak/models/map/authorization/MapResourceStore.java	2026-01-10 00:19:51.000000000 +0000
++++ b/model/map/src/main/java/org/keycloak/models/map/authorization/MapResourceStore.java	2026-07-12 04:53:45.331948262 +0000
 @@ -85,7 +85,7 @@
                  .compare(SearchableFields.NAME, Operator.EQ, name)
                  .compare(SearchableFields.OWNER, Operator.EQ, owner);
@@ -165,8 +165,8 @@
              throw new ModelDuplicateException("Resource with name '" + name + "' for " + resourceServer.getId() + " already exists for request owner " + owner);
          }
  
---- project_original/model/map/src/main/java/org/keycloak/models/map/authorization/MapPermissionTicketStore.java	2026-01-10 00:19:51.000000000 +0000
-+++ project/model/map/src/main/java/org/keycloak/models/map/authorization/MapPermissionTicketStore.java	2026-07-12 04:52:38.078385426 +0000
+--- a/model/map/src/main/java/org/keycloak/models/map/authorization/MapPermissionTicketStore.java	2026-01-10 00:19:51.000000000 +0000
++++ b/model/map/src/main/java/org/keycloak/models/map/authorization/MapPermissionTicketStore.java	2026-07-12 04:52:38.078385426 +0000
 @@ -110,7 +110,7 @@
              mcb = mcb.compare(SearchableFields.SCOPE_ID, Operator.EQ, scope.getId());
          }
@@ -176,8 +176,8 @@
              throw new ModelDuplicateException("Permission ticket for resource server: '" + resourceServer.getId()
                      + ", Resource: " + resource + ", owner: " + owner + ", scopeId: " + scope + " already exists.");
          }
---- project_original/model/map/src/main/java/org/keycloak/models/map/events/MapEventStoreProvider.java	2026-01-10 00:19:51.000000000 +0000
-+++ project/model/map/src/main/java/org/keycloak/models/map/events/MapEventStoreProvider.java	2026-07-12 04:53:28.289299043 +0000
+--- a/model/map/src/main/java/org/keycloak/models/map/events/MapEventStoreProvider.java	2026-01-10 00:19:51.000000000 +0000
++++ b/model/map/src/main/java/org/keycloak/models/map/events/MapEventStoreProvider.java	2026-07-12 04:53:28.289299043 +0000
 @@ -63,7 +63,7 @@
          LOG.tracef("onEvent(%s)%s", event, getShortStackTrace());
          String id = event.getId();
@@ -196,8 +196,8 @@
              throw new ModelDuplicateException("Event already exists: " + id);
          }
          String realmId = event.getRealmId();
---- project_original/model/map/src/main/java/org/keycloak/models/map/userSession/MapUserSessionProvider.java	2026-01-10 00:19:51.000000000 +0000
-+++ project/model/map/src/main/java/org/keycloak/models/map/userSession/MapUserSessionProvider.java	2026-07-12 04:54:22.834376873 +0000
+--- a/model/map/src/main/java/org/keycloak/models/map/userSession/MapUserSessionProvider.java	2026-01-10 00:19:51.000000000 +0000
++++ b/model/map/src/main/java/org/keycloak/models/map/userSession/MapUserSessionProvider.java	2026-07-12 04:54:22.834376873 +0000
 @@ -158,7 +158,7 @@
              }
              transientUserSessions.put(entity.getId(), entity);
@@ -207,8 +207,8 @@
                  throw new ModelDuplicateException("User session exists: " + id);
              }
              entity = userSessionTx.create(entity);
---- project_original/model/map/src/main/java/org/keycloak/models/map/storage/chm/ConcurrentHashMapCrudOperations.java	2026-01-10 00:19:51.000000000 +0000
-+++ project/model/map/src/main/java/org/keycloak/models/map/storage/chm/ConcurrentHashMapCrudOperations.java	2026-07-12 04:52:27.515982711 +0000
+--- a/model/map/src/main/java/org/keycloak/models/map/storage/chm/ConcurrentHashMapCrudOperations.java	2026-01-10 00:19:51.000000000 +0000
++++ b/model/map/src/main/java/org/keycloak/models/map/storage/chm/ConcurrentHashMapCrudOperations.java	2026-07-12 04:52:27.515982711 +0000
 @@ -79,4 +79,25 @@
       * @return Number of objects. Never returns {@code null}.
       */

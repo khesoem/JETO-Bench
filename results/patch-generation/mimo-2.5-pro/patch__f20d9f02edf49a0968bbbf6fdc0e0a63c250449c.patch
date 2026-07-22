@@ -1,5 +1,5 @@
---- /workspace/project_original/core/src/main/java/org/neo4j/ogm/metadata/ClassInfo.java	2026-01-09 21:36:39.000000000 +0000
-+++ /workspace/project/core/src/main/java/org/neo4j/ogm/metadata/ClassInfo.java	2026-07-11 21:40:57.557880601 +0000
+--- a/core/src/main/java/org/neo4j/ogm/metadata/ClassInfo.java	2026-01-09 21:36:39.000000000 +0000
++++ b/core/src/main/java/org/neo4j/ogm/metadata/ClassInfo.java	2026-07-11 21:40:57.557880601 +0000
 @@ -107,6 +107,8 @@
      private volatile MethodInfo postLoadMethod;
      private volatile Collection<String> staticLabels;

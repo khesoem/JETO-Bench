@@ -145,7 +145,18 @@ Useful scripts include:
 - `results/charts/executable_etips_stats.py`
 - `results/tables/modified.py`
 
-## Logs and Outputs
+## Citation
 
-- Runtime logs are written to `logs/`.
-- Several workflows write analysis outputs to paths provided via CLI arguments.
+If you use JETO-Mine or JETO-Bench in your research, please cite our paper:
+
+```bibtex
+@misc{etemadi2026jeto,
+      title={JETO-Bench: A Reproducible Benchmark for Execution Time Improvement Patches in Java}, 
+      author={Khashayar Etemadi and Zhendong Su},
+      year={2026},
+      eprint={2606.31767},
+      archivePrefix={arXiv},
+      primaryClass={cs.SE},
+      url={https://arxiv.org/abs/2606.31767}, 
+}
+```

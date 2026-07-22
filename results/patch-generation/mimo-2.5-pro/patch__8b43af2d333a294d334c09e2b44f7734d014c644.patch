@@ -1,6 +1,5 @@
-diff -ruN project_original/src/main/java/org/springframework/data/elasticsearch/core/geo/GeoJsonLineString.java project/src/main/java/org/springframework/data/elasticsearch/core/geo/GeoJsonLineString.java
---- project_original/src/main/java/org/springframework/data/elasticsearch/core/geo/GeoJsonLineString.java	2026-01-09 21:30:43.000000000 +0000
-+++ project/src/main/java/org/springframework/data/elasticsearch/core/geo/GeoJsonLineString.java	2026-07-11 19:49:04.497706114 +0000
+--- a/src/main/java/org/springframework/data/elasticsearch/core/geo/GeoJsonLineString.java	2026-01-09 21:30:43.000000000 +0000
++++ b/src/main/java/org/springframework/data/elasticsearch/core/geo/GeoJsonLineString.java	2026-07-11 19:49:04.497706114 +0000
 @@ -69,7 +69,7 @@
  		Assert.notNull(second, "Second point must not be null!");
  		Assert.notNull(others, "Additional points must not be null!");
@@ -19,9 +18,8 @@ diff -ruN project_original/src/main/java/org/springframework/data/elasticsearch/
  		points.add(GeoPoint.toPoint(first));
  		points.add(GeoPoint.toPoint(second));
  		points.addAll(Arrays.stream(others).map(GeoPoint::toPoint).collect(Collectors.toList()));
-diff -ruN project_original/src/main/java/org/springframework/data/elasticsearch/core/geo/GeoJsonMultiPoint.java project/src/main/java/org/springframework/data/elasticsearch/core/geo/GeoJsonMultiPoint.java
---- project_original/src/main/java/org/springframework/data/elasticsearch/core/geo/GeoJsonMultiPoint.java	2026-01-09 21:30:43.000000000 +0000
-+++ project/src/main/java/org/springframework/data/elasticsearch/core/geo/GeoJsonMultiPoint.java	2026-07-11 19:49:24.369460945 +0000
+--- a/src/main/java/org/springframework/data/elasticsearch/core/geo/GeoJsonMultiPoint.java	2026-01-09 21:30:43.000000000 +0000
++++ b/src/main/java/org/springframework/data/elasticsearch/core/geo/GeoJsonMultiPoint.java	2026-07-11 19:49:24.369460945 +0000
 @@ -69,7 +69,7 @@
  		Assert.notNull(second, "Second point must not be null!");
  		Assert.notNull(others, "Additional points must not be null!");
@@ -40,9 +38,8 @@ diff -ruN project_original/src/main/java/org/springframework/data/elasticsearch/
  		points.add(GeoPoint.toPoint(first));
  		points.add(GeoPoint.toPoint(second));
  		points.addAll(Arrays.stream(others).map(GeoPoint::toPoint).collect(Collectors.toList()));
-diff -ruN project_original/src/main/java/org/springframework/data/elasticsearch/core/geo/GeoJsonPolygon.java project/src/main/java/org/springframework/data/elasticsearch/core/geo/GeoJsonPolygon.java
---- project_original/src/main/java/org/springframework/data/elasticsearch/core/geo/GeoJsonPolygon.java	2026-01-09 21:30:43.000000000 +0000
-+++ project/src/main/java/org/springframework/data/elasticsearch/core/geo/GeoJsonPolygon.java	2026-07-11 19:49:51.323484797 +0000
+--- a/src/main/java/org/springframework/data/elasticsearch/core/geo/GeoJsonPolygon.java	2026-01-09 21:30:43.000000000 +0000
++++ b/src/main/java/org/springframework/data/elasticsearch/core/geo/GeoJsonPolygon.java	2026-07-11 19:49:51.323484797 +0000
 @@ -88,6 +88,13 @@
  	 * @param others can be empty.
  	 */

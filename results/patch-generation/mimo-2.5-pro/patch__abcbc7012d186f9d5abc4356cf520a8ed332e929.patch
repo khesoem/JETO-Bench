@@ -1,5 +1,5 @@
---- model/map-hot-rod/src/main/java/org/keycloak/models/map/storage/hotRod/connections/DefaultHotRodConnectionProviderFactory.java	2026-01-10 00:33:17.000000000 +0000
-+++ model/map-hot-rod/src/main/java/org/keycloak/models/map/storage/hotRod/connections/DefaultHotRodConnectionProviderFactory.java	2026-07-12 05:32:34.448674199 +0000
+--- a/model/map-hot-rod/src/main/java/org/keycloak/models/map/storage/hotRod/connections/DefaultHotRodConnectionProviderFactory.java	2026-01-10 00:33:17.000000000 +0000
++++ b/model/map-hot-rod/src/main/java/org/keycloak/models/map/storage/hotRod/connections/DefaultHotRodConnectionProviderFactory.java	2026-07-12 05:32:34.448674199 +0000
 @@ -122,18 +122,18 @@
          String reindexCaches = config.get("reindexCaches", null);
          RemoteCacheManagerAdmin administration = remoteCacheManager.administration();
@@ -25,8 +25,8 @@
          }
  
          LOG.infof("HotRod client configuration was successful.");
---- quarkus/config-api/src/main/java/org/keycloak/config/StorageOptions.java	2026-01-10 00:33:17.000000000 +0000
-+++ quarkus/config-api/src/main/java/org/keycloak/config/StorageOptions.java	2026-07-12 05:32:41.067926971 +0000
+--- a/quarkus/config-api/src/main/java/org/keycloak/config/StorageOptions.java	2026-01-10 00:33:17.000000000 +0000
++++ b/quarkus/config-api/src/main/java/org/keycloak/config/StorageOptions.java	2026-07-12 05:32:41.067926971 +0000
 @@ -320,7 +320,7 @@
              .category(OptionCategory.STORAGE)
              .defaultValue("all")

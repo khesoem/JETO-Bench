@@ -1,5 +1,5 @@
---- project_original/src/main/java/com/gluonhq/richtext/model/TextDecoration.java	2026-01-09 12:20:18.000000000 +0000
-+++ project/src/main/java/com/gluonhq/richtext/model/TextDecoration.java	2026-07-11 10:36:23.214617977 +0000
+--- a/src/main/java/com/gluonhq/richtext/model/TextDecoration.java	2026-01-09 12:20:18.000000000 +0000
++++ b/src/main/java/com/gluonhq/richtext/model/TextDecoration.java	2026-07-11 10:36:23.214617977 +0000
 @@ -2,6 +2,8 @@
  
  import javafx.scene.paint.Color;

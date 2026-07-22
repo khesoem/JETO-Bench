@@ -1,5 +1,5 @@
---- /workspace/project_original/spring-cloud-circuitbreaker-resilience4j/src/main/java/org/springframework/cloud/circuitbreaker/resilience4j/Resilience4jBulkheadProvider.java	2026-01-09 22:21:12.000000000 +0000
-+++ /workspace/project/spring-cloud-circuitbreaker-resilience4j/src/main/java/org/springframework/cloud/circuitbreaker/resilience4j/Resilience4jBulkheadProvider.java	2026-07-12 01:33:25.315361077 +0000
+--- a/spring-cloud-circuitbreaker-resilience4j/src/main/java/org/springframework/cloud/circuitbreaker/resilience4j/Resilience4jBulkheadProvider.java	2026-01-09 22:21:12.000000000 +0000
++++ b/spring-cloud-circuitbreaker-resilience4j/src/main/java/org/springframework/cloud/circuitbreaker/resilience4j/Resilience4jBulkheadProvider.java	2026-07-12 01:33:25.315361077 +0000
 @@ -20,6 +20,7 @@
  import java.util.concurrent.CompletionStage;
  import java.util.concurrent.ConcurrentHashMap;

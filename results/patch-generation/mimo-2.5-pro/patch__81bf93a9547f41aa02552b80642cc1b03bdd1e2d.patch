@@ -1,5 +1,5 @@
---- /workspace/project_original/core/src/main/java/org/neo4j/ogm/session/delegates/SaveEventDelegate.java	2026-01-09 21:58:48.000000000 +0000
-+++ /workspace/project/core/src/main/java/org/neo4j/ogm/session/delegates/SaveEventDelegate.java	2026-07-11 22:53:19.847921627 +0000
+--- a/core/src/main/java/org/neo4j/ogm/session/delegates/SaveEventDelegate.java	2026-01-09 21:58:48.000000000 +0000
++++ b/core/src/main/java/org/neo4j/ogm/session/delegates/SaveEventDelegate.java	2026-07-11 22:53:19.847921627 +0000
 @@ -18,9 +18,11 @@
   */
  package org.neo4j.ogm.session.delegates;

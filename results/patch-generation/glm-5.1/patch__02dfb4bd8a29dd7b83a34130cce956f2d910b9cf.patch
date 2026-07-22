@@ -352,8 +352,8 @@
      }
  
      @Override
---- /workspace/project_original/model/jpa/src/main/java/org/keycloak/models/jpa/JpaRealmProvider.java	2026-01-08 21:32:32.000000000 +0000
-+++ /workspace/project/model/jpa/src/main/java/org/keycloak/models/jpa/JpaRealmProvider.java	2026-07-13 16:53:45.846389294 +0000
+--- a/model/jpa/src/main/java/org/keycloak/models/jpa/JpaRealmProvider.java	2026-01-08 21:32:32.000000000 +0000
++++ b/model/jpa/src/main/java/org/keycloak/models/jpa/JpaRealmProvider.java	2026-07-13 16:53:45.846389294 +0000
 @@ -121,7 +121,6 @@
          realm.setName(name);
          realm.setId(id);

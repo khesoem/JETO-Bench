@@ -1,5 +1,5 @@
---- spring-cloud-sleuth-core/src/main/java/org/springframework/cloud/sleuth/instrument/messaging/TracingChannelInterceptor.java
-+++ spring-cloud-sleuth-core/src/main/java/org/springframework/cloud/sleuth/instrument/messaging/TracingChannelInterceptor.java
+--- a/spring-cloud-sleuth-core/src/main/java/org/springframework/cloud/sleuth/instrument/messaging/TracingChannelInterceptor.java
++++ b/spring-cloud-sleuth-core/src/main/java/org/springframework/cloud/sleuth/instrument/messaging/TracingChannelInterceptor.java
 @@ -174,25 +174,41 @@
  		if (emptyMessage(message)) {
  			return message;
@@ -69,8 +69,8 @@
  		headers.setLeaveMutable(true);
  		return headers;
  	}
---- spring-cloud-sleuth-core/src/main/java/org/springframework/cloud/sleuth/instrument/messaging/TracingMethodMessageHandlerAdapter.java
-+++ spring-cloud-sleuth-core/src/main/java/org/springframework/cloud/sleuth/instrument/messaging/TracingMethodMessageHandlerAdapter.java
+--- a/spring-cloud-sleuth-core/src/main/java/org/springframework/cloud/sleuth/instrument/messaging/TracingMethodMessageHandlerAdapter.java
++++ b/spring-cloud-sleuth-core/src/main/java/org/springframework/cloud/sleuth/instrument/messaging/TracingMethodMessageHandlerAdapter.java
 @@ -138,7 +138,16 @@
  	MessageConsumerRequest(Message delegate,
  			Getter<MessageHeaderAccessor, String> getter) {

@@ -1,5 +1,5 @@
---- /workspace/project_original/liquibase-standard/src/main/java/liquibase/util/StringUtil.java	2026-01-09 03:57:54.000000000 +0000
-+++ /workspace/project/liquibase-standard/src/main/java/liquibase/util/StringUtil.java	2026-07-11 01:04:21.767455803 +0000
+--- a/liquibase-standard/src/main/java/liquibase/util/StringUtil.java	2026-01-09 03:57:54.000000000 +0000
++++ b/liquibase-standard/src/main/java/liquibase/util/StringUtil.java	2026-07-11 01:04:21.767455803 +0000
 @@ -9,8 +9,8 @@
  
  import java.io.UnsupportedEncodingException;

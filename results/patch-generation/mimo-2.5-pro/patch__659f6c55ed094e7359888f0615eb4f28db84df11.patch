@@ -1,4 +1,3 @@
-diff --git a/shardingsphere-features/shardingsphere-shadow/shardingsphere-shadow-core/src/main/java/org/apache/shardingsphere/shadow/rewrite/token/generator/impl/ShadowInsertColumnTokenGenerator.java b/shardingsphere-features/shardingsphere-shadow/shardingsphere-shadow-core/src/main/java/org/apache/shardingsphere/shadow/rewrite/token/generator/impl/ShadowInsertColumnTokenGenerator.java
 --- a/shardingsphere-features/shardingsphere-shadow/shardingsphere-shadow-core/src/main/java/org/apache/shardingsphere/shadow/rewrite/token/generator/impl/ShadowInsertColumnTokenGenerator.java
 +++ b/shardingsphere-features/shardingsphere-shadow/shardingsphere-shadow-core/src/main/java/org/apache/shardingsphere/shadow/rewrite/token/generator/impl/ShadowInsertColumnTokenGenerator.java
 @@ -26,9 +26,11 @@
@@ -51,7 +50,6 @@ diff --git a/shardingsphere-features/shardingsphere-shadow/shardingsphere-shadow
 -    }
  }
 
-diff --git a/shardingsphere-features/shardingsphere-shadow/shardingsphere-shadow-core/src/main/java/org/apache/shardingsphere/shadow/rewrite/token/generator/impl/ShadowPredicateColumnTokenGenerator.java b/shardingsphere-features/shardingsphere-shadow/shardingsphere-shadow-core/src/main/java/org/apache/shardingsphere/shadow/rewrite/token/generator/impl/ShadowPredicateColumnTokenGenerator.java
 --- a/shardingsphere-features/shardingsphere-shadow/shardingsphere-shadow-core/src/main/java/org/apache/shardingsphere/shadow/rewrite/token/generator/impl/ShadowPredicateColumnTokenGenerator.java
 +++ b/shardingsphere-features/shardingsphere-shadow/shardingsphere-shadow-core/src/main/java/org/apache/shardingsphere/shadow/rewrite/token/generator/impl/ShadowPredicateColumnTokenGenerator.java
 @@ -32,9 +32,11 @@
@@ -110,7 +108,6 @@ diff --git a/shardingsphere-features/shardingsphere-shadow/shardingsphere-shadow
              return result;
          }
 
-diff --git a/shardingsphere-features/shardingsphere-shadow/shardingsphere-shadow-core/src/main/java/org/apache/shardingsphere/shadow/rewrite/token/generator/impl/ShadowUpdateColumnTokenGenerator.java b/shardingsphere-features/shardingsphere-shadow/shardingsphere-shadow-core/src/main/java/org/apache/shardingsphere/shadow/rewrite/token/generator/impl/ShadowUpdateColumnTokenGenerator.java
 --- a/shardingsphere-features/shardingsphere-shadow/shardingsphere-shadow-core/src/main/java/org/apache/shardingsphere/shadow/rewrite/token/generator/impl/ShadowUpdateColumnTokenGenerator.java
 +++ b/shardingsphere-features/shardingsphere-shadow/shardingsphere-shadow-core/src/main/java/org/apache/shardingsphere/shadow/rewrite/token/generator/impl/ShadowUpdateColumnTokenGenerator.java
 @@ -25,11 +25,10 @@

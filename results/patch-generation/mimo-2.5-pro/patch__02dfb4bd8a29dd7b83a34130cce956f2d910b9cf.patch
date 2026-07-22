@@ -1,5 +1,5 @@
---- /workspace/project_original/model/jpa/src/main/java/org/keycloak/models/jpa/RealmAdapter.java	2026-01-08 21:32:32.000000000 +0000
-+++ model/jpa/src/main/java/org/keycloak/models/jpa/RealmAdapter.java	2026-07-09 20:50:32.203723995 +0000
+--- a/model/jpa/src/main/java/org/keycloak/models/jpa/RealmAdapter.java	2026-01-08 21:32:32.000000000 +0000
++++ b/model/jpa/src/main/java/org/keycloak/models/jpa/RealmAdapter.java	2026-07-09 20:50:32.203723995 +0000
 @@ -97,7 +97,6 @@
      @Override
      public void setName(String name) {
@@ -307,8 +307,8 @@
      }
  
      @Override
---- /workspace/project_original/model/jpa/src/main/java/org/keycloak/models/jpa/JpaRealmProvider.java	2026-01-08 21:32:32.000000000 +0000
-+++ model/jpa/src/main/java/org/keycloak/models/jpa/JpaRealmProvider.java	2026-07-09 20:48:43.769603520 +0000
+--- a/model/jpa/src/main/java/org/keycloak/models/jpa/JpaRealmProvider.java	2026-01-08 21:32:32.000000000 +0000
++++ b/model/jpa/src/main/java/org/keycloak/models/jpa/JpaRealmProvider.java	2026-07-09 20:48:43.769603520 +0000
 @@ -121,7 +121,6 @@
          realm.setName(name);
          realm.setId(id);

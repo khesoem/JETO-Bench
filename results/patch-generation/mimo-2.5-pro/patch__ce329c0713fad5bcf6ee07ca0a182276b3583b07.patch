@@ -1,5 +1,5 @@
---- ./connect-file-pulse-filesystems/filepulse-amazons3-fs/src/main/java/io/streamthoughts/kafka/connect/filepulse/fs/AmazonS3Storage.java	2026-01-09 12:23:34.000000000 +0000
-+++ ../project/connect-file-pulse-filesystems/filepulse-amazons3-fs/src/main/java/io/streamthoughts/kafka/connect/filepulse/fs/AmazonS3Storage.java	2026-07-11 11:14:32.412600552 +0000
+--- a/connect-file-pulse-filesystems/filepulse-amazons3-fs/src/main/java/io/streamthoughts/kafka/connect/filepulse/fs/AmazonS3Storage.java	2026-01-09 12:23:34.000000000 +0000
++++ b/connect-file-pulse-filesystems/filepulse-amazons3-fs/src/main/java/io/streamthoughts/kafka/connect/filepulse/fs/AmazonS3Storage.java	2026-07-11 11:14:32.412600552 +0000
 @@ -27,6 +27,7 @@
  import com.amazonaws.services.s3.model.GetObjectMetadataRequest;
  import com.amazonaws.services.s3.model.GetObjectRequest;
@@ -51,8 +51,8 @@
       * {@inheritDoc}
       */
      public boolean move(final URI source, final URI dest) {
---- ./connect-file-pulse-filesystems/filepulse-amazons3-fs/src/main/java/io/streamthoughts/kafka/connect/filepulse/fs/AmazonS3FileSystemListing.java	2026-01-09 12:23:34.000000000 +0000
-+++ ../project/connect-file-pulse-filesystems/filepulse-amazons3-fs/src/main/java/io/streamthoughts/kafka/connect/filepulse/fs/AmazonS3FileSystemListing.java	2026-07-11 11:14:37.670800367 +0000
+--- a/connect-file-pulse-filesystems/filepulse-amazons3-fs/src/main/java/io/streamthoughts/kafka/connect/filepulse/fs/AmazonS3FileSystemListing.java	2026-01-09 12:23:34.000000000 +0000
++++ b/connect-file-pulse-filesystems/filepulse-amazons3-fs/src/main/java/io/streamthoughts/kafka/connect/filepulse/fs/AmazonS3FileSystemListing.java	2026-07-11 11:14:37.670800367 +0000
 @@ -95,12 +95,7 @@
  
                  objectMetaList.addAll(objectListing.getObjectSummaries()
