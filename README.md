@@ -152,6 +152,7 @@ Optional evaluation arguments:
 
 - The list of identified and manually verified executable ETIPs is in:
   - `results/dataset.csv`
+  - Note that the exec_time_improvement and p_value reported in this file are the overall numbers. To see which tests show statistically significant improvements, take a look at the `test_class_improvements` column.
 - Tables and charts can be checked and reproduced using data and scripts in:
   - `results/`
 
