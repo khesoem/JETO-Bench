@@ -153,11 +153,6 @@ Optional evaluation arguments:
 - The list of identified and manually verified executable ETIPs is in:
   - `results/dataset.csv`
   - Note that the exec_time_improvement and p_value reported in this file are the overall numbers. To see which tests show statistically significant improvements, take a look at the `test_class_improvements` column.
+  - The pre-built docker images can be pull from `ghcr.io/khesoem/{repo-name}-{commit}:latest`
 - Tables and charts can be checked and reproduced using data and scripts in:
   - `results/`
-
-Useful scripts include:
-- `results/charts/stars_year.py`
-- `results/charts/repos.py`
-- `results/charts/executable_etips_stats.py`
-- `results/tables/modified.py`
